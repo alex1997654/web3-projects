@@ -5,6 +5,7 @@ exclude = ["patches"]
 
 [patch.crates-io]
 anchor-syn = { path = "patches/anchor-syn" }
+proc-macro2 = { path = "patches/proc-macro2" }
 
 [profile.release]
 overflow-checks = true
