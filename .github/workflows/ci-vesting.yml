@@ -1,7 +1,9 @@
 name: ci-vesting
 on:
   push:
-    paths: ["solana-token22-vesting/**", ".github/workflows/ci-vesting.yml"]
+    paths:
+      - "solana-token22-vesting/**"
+      - ".github/workflows/ci-vesting.yml"
   workflow_dispatch:
 jobs:
   test:
@@ -11,22 +13,56 @@ jobs:
         working-directory: solana-token22-vesting
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - uses: dtolnay/rust-toolchain@1.75.0
-      - name: Install Solana CLI
+          node-version: "18.19.1"
+
+      - uses: dtolnay/rust-toolchain@1.99.1
+
+      - name: Install Solana CLI 1.18.26
         run: |
           curl -sSfL https://release.anza.xyz/v1.18.26/install | sh
-          echo "/home/ale/.local/share/solana/install/active_release/bin" >> ""
-      - name: Install Anchor CLI and node deps
-        run: |
-          npm install -g @coral-xyz/anchor-cli@0.30.1
-          npm install
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Install Anchor CLI
+        run: npm install -g @coral-xyz/anchor-cli@0.30.1
+
+      - name: Enable yarn
+        run: corepack enable || npm install -g yarn@1.22.22
+
+      # yarn, not npm: package.json uses the resolutions field to pin one
+      # @solana/web3.js copy, and npm ignores resolutions.
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "solana-token22-vesting"
+
+      - name: Generate local test wallet
+        run: bash scripts/setup-wallet.sh
+
       - name: Build
         run: anchor build
+
       - name: Integration tests (local validator)
         run: anchor test
+
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: solana-token22-vesting
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@1.99.1
+        with:
+          components: rustfmt, clippy
+
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: cargo clippy
+        run: cargo clippy -p token22_vesting --all-targets -- -D warnings

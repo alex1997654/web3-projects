@@ -129,7 +129,7 @@ solana program show A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF --url devnet
 ```
 
 Then poke it from the browser client (Phantom, devnet):
-https://alex1997654.github.io/solana-token22-vesting/
+https://alex1997654.github.io/web3-projects/solana-token22-vesting/app/
 
 Or from the CLI:
 
@@ -143,8 +143,9 @@ day.
 
 ## Toolchain versions
 
-Built and tested with exactly these (see ../TOOLCHAIN.md in the parent
-web3-projects checkout for the shared setup):
+Built and tested with exactly these (this project lives in the
+web3-projects monorepo; see TOOLCHAIN.md at the repo root for the shared
+setup):
 
 - Ubuntu 24.04.5 LTS
 - rustc/cargo 1.99.1 (host: unit tests, clippy, anchor IDL build)
@@ -201,6 +202,8 @@ solana airdrop 2 $(solana-keygen pubkey wallet/devnet-payer.json) --url devnet
 
 anchor build  # or scripts/build.sh, which also mirrors the .so into target/deploy
 anchor deploy --provider.cluster devnet --provider.wallet wallet/devnet-payer.json
+# the program keypair is .target/deploy/token22_vesting-keypair.json on this
+# checkout; keep a copy if you ever clean the shared cache
 ```
 
 anchor build generates a fresh target/deploy/token22_vesting-keypair.json

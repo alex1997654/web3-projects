@@ -169,4 +169,4 @@ console.log("schedule #" + scheduleIdx + " created: " + vesting.toString());
 console.log("  vault: " + vault.toString());
 console.log("  amount: 100 tokens, cliff in 2 min, maturity in 10 min, revocable");
 console.log("  tx https://explorer.solana.com/tx/" + sig + "?cluster=devnet");
-console.log("claim it at https://alex1997654.github.io/solana-token22-vesting/ with the payer wallet");
+console.log("claim it at https://alex1997654.github.io/web3-projects/solana-token22-vesting/app/ with the payer wallet");
