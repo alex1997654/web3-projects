@@ -3,30 +3,72 @@ on:
   push:
     paths: ["solana-anchor-escrow/**", ".github/workflows/ci-escrow.yml"]
   workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  # GitHub runner images export RUSTC_BOOTSTRAP=1, which flips
+  # proc-macro2's build probe into its nightly-only code path. That path
+  # needs proc_macro APIs that current rustc removed, so the anchor 0.30.1
+  # IDL build dies on them. Keep the probes on the stable path.
+  RUSTC_BOOTSTRAP: "0"
+
 jobs:
   test:
+    name: fmt, clippy, unit tests, anchor test
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: solana-anchor-escrow
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-      - uses: dtolnay/rust-toolchain@1.75.0
-      - name: Install Solana CLI
+
+      # 1.99.1 is the job default: anchor 0.30.1's IDL build compiles its
+      # proc-macro graph against the stable proc_macro Span API, which 1.75
+      # does not have. 1.75.0 is installed only to build anchor-cli itself
+      # (its --locked lockfile predates newer rustc).
+      - name: Install Rust
         run: |
-          curl -sSfL https://release.anza.xyz/v1.18.26/install | sh
-          echo "/home/ale/.local/share/solana/install/active_release/bin" >> ""
-      - name: Install Anchor CLI and node deps
+          rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+          rustup toolchain install 1.75.0 --profile minimal
+          rustup default 1.99.1
+
+      - name: Install Solana CLI (Agave) 1.18.26
         run: |
-          npm install -g @coral-xyz/anchor-cli@0.30.1
-          npm install
-      - uses: Swatinem/rust-cache@v2
+          sh -c "$(curl -sSfL https://release.anza.xyz/v1.18.26/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Install Anchor CLI 0.30.1
+        env:
+          RUSTUP_TOOLCHAIN: "1.75.0"
+        run: cargo install anchor-cli --version 0.30.1 --locked
+
+      - name: Install Node
+        uses: actions/setup-node@v4
         with:
-          workspaces: "solana-anchor-escrow"
-      - name: Build
-        run: anchor build
-      - name: Integration tests (local validator)
+          node-version: "18.19.1"
+
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: cargo clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Rust unit tests
+        run: cargo test --locked -p escrow
+
+      - name: Generate a throwaway program keypair (never committed)
+        run: |
+          mkdir -p target/deploy
+          solana-keygen new -o target/deploy/escrow-keypair.json --no-bip39-passphrase
+          anchor keys sync
+
+      - name: anchor test (local validator, integration suite)
         run: anchor test
+
+      - name: Syntax-check the demo frontend
+        run: node --input-type=module --check < docs/app.js
