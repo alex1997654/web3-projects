@@ -54,13 +54,13 @@ Verify it is live:
 solana program show __PROGRAM_ID__ --url devnet
 ```
 
-Try it without building anything: the static demo at __DEMO_URL__ walks a full offer, take, and refund cycle with a Phantom wallet on devnet. It creates throwaway tokens for you.
+Try it without building anything: the static demo at https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/ walks a full offer, take, and refund cycle with a Phantom wallet on devnet. It creates throwaway tokens for you.
 
 ## Toolchain
 
 Pinned on purpose; the dependency pins below are part of the build.
 
-- Rust 1.94.0 as the host toolchain. The SBF side always compiles with the rustc 1.75.0-dev inside solana-cli's platform-tools, so the host rustc never touches the on-chain artifact. But anchor 0.30.1's IDL build probes the nightly proc_macro Span surface: 1.75 does not have it at all and newer rustc has removed parts of it, and 1.94 is the version that satisfies the probe either way. CI pins 1.94.0 and builds anchor-cli itself on 1.75.0, whose lockfile predates newer compilers. If RUSTC_BOOTSTRAP is set in your environment, expect the IDL step to care
+- Rust 1.99.1 as the host toolchain. The SBF side always compiles with the rustc 1.75.0-dev inside solana-cli's platform-tools, so the host rustc never touches the on-chain artifact. Two anchor 0.30.1 quirks matter for the host: the CLI must be installed from crates.io without --locked (the published lockfile pins an IDL helper that forces a rustc cfg no modern compiler accepts), and RUSTUP_TOOLCHAIN must stay unset or the same helper interpolates a broken toolchain argument
 - Anchor CLI 0.30.1 from crates.io (`cargo install anchor-cli --version 0.30.1`), anchor-lang and anchor-spl pinned to =0.30.1
 - Solana CLI (Agave line) 1.18.26
 - Node 18.19.x, yarn 1.22.x
