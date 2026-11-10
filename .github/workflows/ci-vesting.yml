@@ -15,12 +15,12 @@ env:
   # is unaffected: it invokes cargo +solana explicitly, which beats this
   # variable.
   RUSTUP_TOOLCHAIN: "1.99.1"
-  # The runner image exports RUSTC_BOOTSTRAP=1; without clearing it,
-  # proc-macro2's build probe flips into a code path this toolchain
-  # cannot compile. The vendored patches/proc-macro2 already refuses to
-  # emit that path, and clearing the variable keeps the host identical
-  # to the validated local environment.
-  RUSTC_BOOTSTRAP: ""
+  # RUSTC_BOOTSTRAP stays at the runner default (1). Setting it to an
+  # empty string breaks this cargo-build-sbf build: its script takes a
+  # path with an unexpanded {toolchain} placeholder whenever the
+  # variable is set-but-empty. The vendored patches/proc-macro2 already
+  # refuses to emit the nightly-only code path that RUSTC_BOOTSTRAP=1
+  # would otherwise unlock, so the default is safe here.
 
 jobs:
   test:
