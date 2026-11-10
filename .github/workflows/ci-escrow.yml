@@ -6,6 +6,13 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  # Pin every cargo invocation to 1.94.0, including the one anchor's IDL
+  # helper spawns (it honors RUSTUP_TOOLCHAIN when set; without this the
+  # runner image can leak its own value and the IDL build lands on a
+  # compiler that lacks the proc_macro API anchor 0.30.1 probes for).
+  # cargo-build-sbf is unaffected: it invokes cargo +solana explicitly and
+  # an explicit toolchain argument beats this environment variable.
+  RUSTUP_TOOLCHAIN: "1.94.0"
   # GitHub runner images export RUSTC_BOOTSTRAP=1, which flips
   # proc-macro2's build probe into its nightly-only code path. That path
   # needs proc_macro::SourceFile, which rustc removed after 1.94, so the
