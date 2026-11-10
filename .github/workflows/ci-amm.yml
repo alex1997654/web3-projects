@@ -3,26 +3,46 @@ on:
   push:
     paths: ["solana-anchor-amm/**", ".github/workflows/ci-amm.yml"]
   workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Pin every cargo invocation to 1.94.0, including the one anchor's IDL
+  # helper spawns (it honors RUSTUP_TOOLCHAIN when set; without this the
+  # runner image can leak its own value and the IDL build lands on a
+  # compiler that lacks the proc_macro API anchor 0.30.1 probes for).
+  # cargo-build-sbf is unaffected: it invokes cargo +solana explicitly and
+  # an explicit toolchain argument beats this environment variable.
+  RUSTUP_TOOLCHAIN: "1.94.0"
+  # GitHub runner images export RUSTC_BOOTSTRAP=1, which flips
+  # proc-macro2's build probe into its nightly-only code path. That path
+  # needs proc_macro::SourceFile, which rustc removed after 1.94, so the
+  # anchor 0.30.1 IDL build dies on newer compilers. 1.94.0 is therefore
+  # the host default here; it carries the API and passes either way.
+
 jobs:
   test:
+    name: fmt, clippy, unit tests, anchor test
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: solana-anchor-amm
+
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.19.1
-          cache: yarn
-          cache-dependency-path: solana-anchor-amm/yarn.lock
+      # 1.94.0 is the job default: anchor 0.30.1's IDL build probes the
+      # nightly proc_macro Span surface, which 1.75 lacks entirely and newer
+      # rustc has partially removed. 1.75.0 is installed only to build
+      # anchor-cli itself (its --locked lockfile predates newer rustc).
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.94.0 --profile minimal --component rustfmt --component clippy
+          rustup toolchain install 1.75.0 --profile minimal
+          rustup default 1.94.0
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@1.99.1
-        with:
-          components: rustfmt, clippy
-
+      # release.solana.com intermittently fails TLS from CI runners; the
+      # solana-labs GitHub release carries the identical tarball.
       - name: Install Solana CLI 1.18.26
         run: |
           curl -sfL -o /tmp/solana.tar.bz2 \
@@ -32,7 +52,15 @@ jobs:
           echo "$HOME/.local/share/solana-release/bin" >> "$GITHUB_PATH"
 
       - name: Install Anchor CLI 0.30.1
-        run: npm install -g @coral-xyz/anchor-cli@0.30.1
+        env:
+          RUSTUP_TOOLCHAIN: "1.75.0"
+        run: cargo install anchor-cli --version 0.30.1 --locked
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.19.1
+          cache: yarn
+          cache-dependency-path: solana-anchor-amm/yarn.lock
 
       - name: Install JS dependencies
         run: yarn install --frozen-lockfile
@@ -43,8 +71,11 @@ jobs:
           workspaces: solana-anchor-amm
 
       # Downloads platform-tools v1.41 into the solana cache (rust and llvm)
-      # and swaps in the cargo 1.79 binary from v1.45. See the Toolchain
-      # section of solana-anchor-amm/README.md for why this pairing is needed.
+      # and swaps in the cargo 1.79 binary from v1.45: the committed
+      # Cargo.lock is v4 and the cargo bundled with v1.41 (1.75) cannot read
+      # v4, while cargo >=1.80 passes --check-cfg flags the v1.41 rustc
+      # rejects. cargo-build-sbf invokes cargo +solana explicitly, so the
+      # RUSTUP_TOOLCHAIN pin above does not interfere.
       - name: Fix sbf cargo (lockfile v4 vs platform-tools cargo 1.75)
         run: ./scripts/fix-sbf-cargo.sh
 
@@ -65,10 +96,10 @@ jobs:
         run: cargo fmt --all -- --check
 
       - name: Clippy
-        run: cargo clippy --all-targets -- -D warnings
+        run: cargo clippy --locked --all-targets -- -D warnings
 
       - name: Rust unit tests (math)
-        run: cargo test
+        run: cargo test --locked -p amm
 
       - name: Integration tests (anchor test, local validator)
         run: anchor test
