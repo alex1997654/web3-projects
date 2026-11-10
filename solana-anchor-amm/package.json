@@ -1,0 +1,30 @@
+{
+  "name": "solana-anchor-amm",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "yarn run mocha -r ts-node/register -t 1000000 'tests/**/*.ts'",
+    "test:unit": "cargo test -p amm",
+    "cli": "ts-node scripts/cli.ts"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.30.1",
+    "@solana/spl-token": "0.4.6",
+    "@solana/web3.js": "1.95.3",
+    "bn.js": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.14",
+    "@types/node": "^20.14.0",
+    "@types/mocha": "^10.0.6",
+    "chai": "^4.4.1",
+    "mocha": "^10.4.0",
+    "ts-mocha": "^2.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "@types/bn.js": "^5.1.5"
+  },
+  "resolutions": {
+    "@solana/web3.js": "1.95.3"
+  }
+}

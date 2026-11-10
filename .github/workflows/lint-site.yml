@@ -1,5 +1,7 @@
-name: lint
-on: [push]
+name: lint-site
+on:
+  push:
+    paths: ["index.html", "styles.css", ".github/workflows/lint-site.yml"]
 jobs:
   htmlhint:
     runs-on: ubuntu-latest

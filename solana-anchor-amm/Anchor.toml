@@ -1,0 +1,15 @@
+[features]
+skip-lint = false
+
+[programs.localnet]
+amm = "DWqPzswcf4rvZSb5yGj14Cy7fnyGvrgUM17N4WnkLheY"
+
+[registry]
+url = "https://api.crates.io"
+
+[provider]
+cluster = "localnet"
+wallet = "wallets/dev.json"
+
+[scripts]
+test = "yarn run mocha -r ts-node/register -t 1000000 'tests/**/*.ts'"

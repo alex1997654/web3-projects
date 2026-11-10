@@ -1,0 +1,85 @@
+:root {
+  --bg: #10141a;
+  --panel: #171d26;
+  --text: #d7dde6;
+  --muted: #8b96a5;
+  --accent: #7fe0a8;
+  --border: #232c38;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0 auto;
+  max-width: 880px;
+  padding: 1.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+code { font-family: ui-monospace, monospace; color: var(--accent); font-size: 0.85em; }
+
+h1 { font-size: 1.4rem; margin-bottom: 0.2rem; }
+h2 { font-size: 1.05rem; margin: 1.6rem 0 0.4rem; color: var(--accent); }
+
+section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+}
+
+button {
+  background: var(--accent);
+  color: #0c130f;
+  border: none;
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.45; cursor: default; }
+button.link { background: none; color: var(--accent); padding: 0; text-decoration: underline; }
+
+input {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 0.35rem 0.5rem;
+}
+input[readonly] { color: var(--muted); }
+
+.row { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; margin: 0.5rem 0; }
+.row label { display: flex; gap: 0.4rem; align-items: center; font-size: 0.9rem; }
+label.check input { width: auto; }
+
+.muted { color: var(--muted); font-size: 0.9rem; }
+
+#log {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.6rem;
+  min-height: 3rem;
+  max-height: 14rem;
+  overflow: auto;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+}
+
+.schedule-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+.schedule-card dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.1rem 1rem; margin: 0; }
+.schedule-card dt { color: var(--muted); }
+.schedule-card dd { margin: 0; }
+
+footer { text-align: center; }

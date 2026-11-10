@@ -1,0 +1,18 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+escrow = "9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run mocha --require ts-node/register/transpile-only --extension ts -t 1000000 tests/*.ts"

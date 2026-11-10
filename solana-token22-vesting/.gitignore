@@ -1,0 +1,12 @@
+.anchor
+target
+wallet
+node_modules
+dist
+yarn-error.log
+.DS_Store
+
+# keypairs are never committed
+.env
+*.env
+*-keypair.json

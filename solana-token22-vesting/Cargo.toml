@@ -1,0 +1,10 @@
+[workspace]
+members = ["programs/*"]
+resolver = "2"
+exclude = ["patches"]
+
+[patch.crates-io]
+anchor-syn = { path = "patches/anchor-syn" }
+
+[profile.release]
+overflow-checks = true

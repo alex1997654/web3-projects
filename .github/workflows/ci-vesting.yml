@@ -1,0 +1,32 @@
+name: ci-vesting
+on:
+  push:
+    paths: ["solana-token22-vesting/**", ".github/workflows/ci-vesting.yml"]
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: solana-token22-vesting
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - uses: dtolnay/rust-toolchain@1.75.0
+      - name: Install Solana CLI
+        run: |
+          curl -sSfL https://release.anza.xyz/v1.18.26/install | sh
+          echo "/home/ale/.local/share/solana/install/active_release/bin" >> 
+      - name: Install Anchor CLI and node deps
+        run: |
+          npm install -g @coral-xyz/anchor-cli@0.30.1
+          npm install
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "solana-token22-vesting"
+      - name: Build
+        run: anchor build
+      - name: Integration tests (local validator)
+        run: anchor test

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token-2022 Vesting</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Token-2022 Vesting</h1>
+  <p>Cliff plus linear vesting on Solana, devnet only. Program
+    <code>A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF</code>. Connect Phantom and walk a full schedule:
+    create a Token-2022 mint, lock tokens under a schedule, claim as they
+    unlock.</p>
+</header>
+
+<section id="connect-section">
+  <button id="connect">Connect Phantom</button>
+  <span id="wallet" class="muted"></span>
+</section>
+
+<section id="actions" hidden>
+  <h2>Mint</h2>
+  <p class="muted">Creates a Token-2022 mint (6 decimals) with you as
+    authority, then mints 1000 tokens to your own token account. One button,
+    one transaction.</p>
+  <div class="row">
+    <input id="mint-address" placeholder="mint (filled after creation)" readonly size="52">
+    <button id="create-mint">Create devnet mint</button>
+  </div>
+
+  <h2>Create schedule</h2>
+  <p class="muted">Vesting starts now. Nothing is claimable before the cliff.
+    At the cliff everything accrued so far unlocks; the rest unlocks linearly
+    until maturity.</p>
+  <div class="row">
+    <input id="beneficiary" placeholder="beneficiary pubkey" size="52">
+  </div>
+  <div class="row">
+    <label>amount <input id="amount" type="number" min="0.000001" step="any" value="100"></label>
+    <label>cliff (minutes) <input id="cliff-min" type="number" min="1" value="2"></label>
+    <label>maturity (minutes) <input id="maturity-min" type="number" min="2" value="10"></label>
+    <label class="check"><input id="revocable" type="checkbox" checked> revocable</label>
+    <button id="create-schedule">Lock tokens</button>
+  </div>
+
+  <h2>My schedules</h2>
+  <p class="muted">Schedules where the connected wallet is the beneficiary.
+    <button id="refresh" class="link">refresh</button></p>
+  <div id="schedules"> </div>
+</section>
+
+<section id="log-section">
+  <h2>Log</h2>
+  <pre id="log">waiting for wallet connection</pre>
+</section>
+
+<footer>
+  <p class="muted">Static page, no backend. Keypairs never leave your wallet.
+    Source: <a href="https://github.com/alex1997654/solana-token22-vesting">solana-token22-vesting</a>.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

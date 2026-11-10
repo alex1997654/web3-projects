@@ -1,0 +1,22 @@
+# Anchor / cargo
+.anchor
+target
+.sbf-cache
+**/*.rs.bk
+
+# Node
+node_modules
+.yarn
+test-ledger
+
+# OS
+.DS_Store
+
+# Never commit secrets or keypairs
+.env
+id.json
+*-keypair.json
+**/*keypair*.json
+provider.json
+wallet.json
+.pm2probe/

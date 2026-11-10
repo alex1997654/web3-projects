@@ -1,0 +1,31 @@
+{
+  "name": "solana-chain-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Live Solana on-chain activity dashboard. Static app, public RPC endpoints, decoding done in the browser.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "verify:live": "vite-node scripts/verify-live.ts",
+    "verify:reconnect": "vite-node scripts/verify-reconnect.ts",
+    "dump": "vite-node scripts/dump-events.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "eslint": "9.39.5",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.2",
+    "vite": "5.4.21",
+    "vitest": "2.1.9",
+    "ws": "8.22.2"
+  }
+}

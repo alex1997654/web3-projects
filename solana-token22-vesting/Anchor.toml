@@ -1,0 +1,19 @@
+[features]
+seeds = true
+skip-lint = false
+
+[programs.localnet]
+token22_vesting = "A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF"
+
+[registry]
+url = "https://api.crates.io"
+
+[provider]
+cluster = "Localnet"
+wallet = "./wallet/devnet-payer.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 30000

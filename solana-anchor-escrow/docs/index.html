@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anchor escrow demo</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>Anchor escrow demo</h1>
+  <div class="wallet">
+    <span id="wallet-info">Not connected.</span>
+    <button id="connect-btn" type="button">Connect</button>
+  </div>
+</header>
+<div class="wrap">
+  <div id="status">
+    <span id="status-msg">No actions yet.</span>
+    <span id="status-sig"></span>
+  </div>
+  <main class="cols">
+    <div class="col-forms">
+      <section class="panel">
+        <h2>Demo tokens</h2>
+        <p class="hint">Creates mint A (6 decimals) and mint B (9 decimals) with your wallet as mint authority, then mints 1,000,000,000,000 raw units of each into your token accounts. Two transactions. Needs devnet SOL for rent and fees.</p>
+        <button id="create-tokens" type="button">Create demo tokens</button>
+        <div id="demo-out"></div>
+      </section>
+      <section class="panel">
+        <h2>Post offer</h2>
+        <label for="mint-a">Mint A (offered)</label>
+        <input id="mint-a" type="text" placeholder="mint A pubkey" autocomplete="off" spellcheck="false">
+        <label for="mint-b">Mint B (asked)</label>
+        <input id="mint-b" type="text" placeholder="mint B pubkey" autocomplete="off" spellcheck="false">
+        <label for="amount-a">Amount A (raw)</label>
+        <input id="amount-a" type="text" inputmode="numeric" placeholder="raw base units" autocomplete="off" spellcheck="false">
+        <label for="ask-b">Ask B (raw)</label>
+        <input id="ask-b" type="text" inputmode="numeric" placeholder="raw base units" autocomplete="off" spellcheck="false">
+        <label for="expiry-min">Expiry (minutes from now, empty = never)</label>
+        <input id="expiry-min" type="number" min="0" step="1" placeholder="never" autocomplete="off">
+        <label for="seed">Seed</label>
+        <div class="row">
+          <input id="seed" type="text" readonly>
+          <button id="seed-new" type="button">New seed</button>
+        </div>
+        <p id="price-line" class="hint">Price: fill mints and raw amounts to see the rate.</p>
+        <button id="post-offer" type="button" class="primary">Post offer</button>
+      </section>
+      <section class="panel">
+        <h2>Balances</h2>
+        <p id="bal-a" class="hint mono">Not connected.</p>
+        <p id="bal-b" class="hint mono"></p>
+      </section>
+    </div>
+    <div>
+      <section class="panel">
+        <div class="row spread">
+          <h2>Open offers</h2>
+          <button id="refresh-offers" type="button">Refresh</button>
+        </div>
+        <p id="offers-empty">No offers loaded yet. Press Refresh.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Maker</th>
+                <th>Mint A</th>
+                <th>Mint B</th>
+                <th>Remaining A</th>
+                <th>Ask B</th>
+                <th>Rate</th>
+                <th>Expiry</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="offers-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<footer>
+  <div>program <span class="mono">9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo</span></div>
+  <div class="mono">solana program show 9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo --url devnet</div>
+  <div><a href="https://github.com/alex1997654/solana-anchor-escrow" target="_blank" rel="noreferrer">github.com/alex1997654/solana-anchor-escrow</a></div>
+</footer>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

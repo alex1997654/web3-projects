@@ -1,0 +1,32 @@
+[package]
+name = "amm"
+version = "0.1.0"
+description = "Constant-product AMM with checked integer math"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "amm"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = "=0.30.1"
+anchor-spl = "=0.30.1"
+
+# anchor-syn's IDL build path calls proc_macro2::Span::source_file, which is
+# only compiled in when proc-macro2 has its span-locations feature. Feature
+# unification from this dependency line turns that on for the workspace build.
+proc-macro2 = { version = "1", features = ["span-locations"] }
+
+# anchor_lang macros reference cfg values (custom-heap, custom-panic, solana,
+# anchor-debug) that only exist under cargo-build-sbf, so a host build would
+# otherwise warn on every one of them.
+[lints.rust]
+unexpected_cfgs = { level = "allow" }
