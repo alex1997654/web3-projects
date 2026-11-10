@@ -43,3 +43,7 @@ Plain, direct, human. No em-dash-heavy sentences, no perfectly parallel bullet l
 ## CI
 
 A minimal workflow lints the HTML on every push. Keep it green. Badge is not needed on the site itself.
+
+## Repo note
+
+The site is served from this repo's root. index.html and styles.css at the root ARE the site. The repo README is the portfolio front page; site editing notes stay in this file.
