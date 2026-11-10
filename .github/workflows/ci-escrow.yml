@@ -74,8 +74,18 @@ jobs:
           solana-keygen new -o target/deploy/escrow-keypair.json --no-bip39-passphrase
           anchor keys sync
 
+      - name: Diagnose IDL build environment
+        run: |
+          env | grep -E 'RUST|CARGO' | sort
+          rustc -vV | head -3
+          cd programs/escrow
+          RUSTFLAGS='-A warnings' ANCHOR_IDL_BUILD_NO_DOCS=FALSE \
+            ANCHOR_IDL_BUILD_RESOLUTION=TRUE ANCHOR_IDL_BUILD_SKIP_LINT=FALSE \
+            ANCHOR_IDL_BUILD_PROGRAM_PATH="$PWD" \
+            cargo test __anchor_private_print_idl --features idl-build -- --show-output --quiet 2>&1 | tail -3
+
       - name: anchor test (local validator, integration suite)
-        run: anchor test
+        run: ANCHOR_LOG=true anchor test
 
       - name: Syntax-check the demo frontend
         run: node --input-type=module --check < docs/app.js
