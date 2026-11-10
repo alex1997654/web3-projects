@@ -6,18 +6,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  # Pin every cargo invocation to 1.94.0, including the one anchor's IDL
-  # helper spawns (it honors RUSTUP_TOOLCHAIN when set; without this the
-  # runner image can leak its own value and the IDL build lands on a
-  # compiler that lacks the proc_macro API anchor 0.30.1 probes for).
-  # cargo-build-sbf is unaffected: it invokes cargo +solana explicitly and
-  # an explicit toolchain argument beats this environment variable.
-  RUSTUP_TOOLCHAIN: "1.94.0"
-  # GitHub runner images export RUSTC_BOOTSTRAP=1, which flips
-  # proc-macro2's build probe into its nightly-only code path. That path
-  # needs proc_macro::SourceFile, which rustc removed after 1.94, so the
-  # anchor 0.30.1 IDL build dies on newer compilers. 1.94.0 is therefore
-  # the host default here; it carries the API and passes either way.
 
 jobs:
   test:
@@ -31,13 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # One toolchain: 1.94.0. The anchor 0.30.1 IDL helper probes the
-      # proc_macro Span surface, which 1.75 lacks entirely and rustc after
-      # 1.94 has partially removed.
+      # Single toolchain, 1.99.1. Keep RUSTUP_TOOLCHAIN unset everywhere:
+      # older anchor-lang-idl helpers read it and run cargo with a broken
+      # interpolated toolchain argument.
       - name: Install Rust
         run: |
-          rustup toolchain install 1.94.0 --profile minimal --component rustfmt --component clippy
-          rustup default 1.94.0
+          rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+          rustup default 1.99.1
 
       - name: Install Solana CLI (Agave) 1.18.26
         run: |
@@ -73,18 +61,8 @@ jobs:
           solana-keygen new -o target/deploy/escrow-keypair.json --no-bip39-passphrase
           anchor keys sync
 
-      - name: Diagnose IDL build environment
-        run: |
-          env | grep -E 'RUST|CARGO' | sort
-          rustc -vV | head -3
-          cd programs/escrow
-          RUSTFLAGS='-A warnings' ANCHOR_IDL_BUILD_NO_DOCS=FALSE \
-            ANCHOR_IDL_BUILD_RESOLUTION=TRUE ANCHOR_IDL_BUILD_SKIP_LINT=FALSE \
-            ANCHOR_IDL_BUILD_PROGRAM_PATH="$PWD" \
-            cargo test __anchor_private_print_idl --features idl-build -- --show-output --quiet 2>&1 | tail -3
-
       - name: anchor test (local validator, integration suite)
-        run: ANCHOR_LOG=true anchor test
+        run: anchor test
 
       - name: Syntax-check the demo frontend
         run: node --input-type=module --check < docs/app.js
