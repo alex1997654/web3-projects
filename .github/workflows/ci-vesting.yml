@@ -57,22 +57,16 @@ jobs:
       - name: Install JS dependencies
         run: yarn install --frozen-lockfile
 
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "solana-token22-vesting"
-          # v2 cache namespace: earlier runs saved artifacts built by the
-          # runner's leaked default compiler (pre RUSTUP_TOOLCHAIN pin),
-          # including proc-macro dylibs that misbehave under 1.99.1. Start
-          # the cache over under the pinned toolchain.
-          prefix-key: "vesting-v2"
+      # No rust-cache: it also restores ~/.rustup state, including the
+      # rustup 'solana' toolchain link that cargo-build-sbf manages, and a
+      # link restored from a run where it was created with a relative path
+      # breaks every later SBF build with a literal '{toolchain}' error.
+      # Cold builds cost minutes; the link always starts clean this way.
 
       - name: Generate local test wallet
         run: bash scripts/setup-wallet.sh
 
-      - name: Build
-        run: anchor build
-
-      - name: Integration tests (local validator)
+      - name: anchor test (build, local validator, integration suite)
         run: anchor test
 
   lint:
