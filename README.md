@@ -4,10 +4,11 @@ Static, hand-written, no build step. Served by GitHub Pages straight from the ma
 
 ## Publish
 
-1. Create a public repo named <username>.github.io under your GitHub account.
-2. Copy these files into it, fill the three TODO placeholders in index.html (GitHub username, Upwork profile URL, email).
-3. Push to main. The site goes live at https://<username>.github.io within a minute or two.
-4. Settings > Pages should show "Deploy from a branch", branch main, folder / (root). Enforce HTTPS stays on.
+The repo is alex1997654/web3-projects and the site is live at:
+
+    https://alex1997654.github.io/web3-projects/
+
+Pages serves from branch main, folder root. Push to main and the site updates on the next build. All asset paths in index.html are relative, so the subpath location works without configuration.
 
 ## Editing
 
