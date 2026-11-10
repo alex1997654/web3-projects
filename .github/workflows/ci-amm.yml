@@ -11,22 +11,64 @@ jobs:
         working-directory: solana-anchor-amm
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - uses: dtolnay/rust-toolchain@1.75.0
-      - name: Install Solana CLI
-        run: |
-          curl -sSfL https://release.anza.xyz/v1.18.26/install | sh
-          echo "/home/ale/.local/share/solana/install/active_release/bin" >> ""
-      - name: Install Anchor CLI and node deps
-        run: |
-          npm install -g @coral-xyz/anchor-cli@0.30.1
-          npm install
-      - uses: Swatinem/rust-cache@v2
+          node-version: 18.19.1
+          cache: yarn
+          cache-dependency-path: solana-anchor-amm/yarn.lock
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@1.99.1
         with:
-          workspaces: "solana-anchor-amm"
-      - name: Build
+          components: rustfmt, clippy
+
+      - name: Install Solana CLI 1.18.26
+        run: |
+          curl -sfL -o /tmp/solana.tar.bz2 \
+            https://github.com/solana-labs/solana/releases/download/v1.18.26/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+          mkdir -p "$HOME/.local/share"
+          tar -xjf /tmp/solana.tar.bz2 -C "$HOME/.local/share"
+          echo "$HOME/.local/share/solana-release/bin" >> "$GITHUB_PATH"
+
+      - name: Install Anchor CLI 0.30.1
+        run: npm install -g @coral-xyz/anchor-cli@0.30.1
+
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: solana-anchor-amm
+
+      # Downloads platform-tools v1.41 into the solana cache (rust and llvm)
+      # and swaps in the cargo 1.79 binary from v1.45. See the Toolchain
+      # section of solana-anchor-amm/README.md for why this pairing is needed.
+      - name: Fix sbf cargo (lockfile v4 vs platform-tools cargo 1.75)
+        run: ./scripts/fix-sbf-cargo.sh
+
+      # The program keypair is never committed. CI generates a fresh one and
+      # syncs declare_id!/Anchor.toml to it so build and tests stay
+      # self-consistent.
+      - name: Prepare program and wallet keypairs
+        run: |
+          mkdir -p wallets target/deploy
+          solana-keygen new --no-bip39-passphrase --force -o wallets/dev.json
+          solana-keygen new --no-bip39-passphrase --force -o target/deploy/amm-keypair.json
+          anchor keys sync
+
+      - name: Build program
         run: anchor build
-      - name: Integration tests (local validator)
+
+      - name: Rust format check
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Rust unit tests (math)
+        run: cargo test
+
+      - name: Integration tests (anchor test, local validator)
         run: anchor test
