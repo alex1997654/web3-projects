@@ -38,6 +38,8 @@ yarn cli swap <base> <quote> base-in 10000
 yarn cli pool <base> <quote>            # reserves, k, and both prices
 ```
 
+There is also `demo`, which swaps base for quote and back and prints the round-trip deficit next to the fee it should cost. On the pool above, 10000 in and out of the base side loses 51 units to two legs of 25 bps plus two floors.
+
 Account layout, one diagram:
 
 ```text
