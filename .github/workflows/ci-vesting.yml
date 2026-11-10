@@ -43,11 +43,11 @@ jobs:
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
 
       - name: Install Anchor CLI 0.30.1
-        # cargo install, not npm: the npm wrapper spawns cargo with its own
-        # environment for the IDL helper, which is the one place this build
-        # has diverged from the validated local one. The cargo build is the
-        # same binary and argument path used locally.
-        run: cargo install anchor-cli --version 0.30.1 --locked
+        # cargo install, not npm: the npm wrapper drives the IDL helper with
+        # its own environment. No --locked: anchor-cli 0.30.1's published
+        # lockfile pins deps that fail type inference on rustc 1.99; the
+        # open resolution compiles (same lesson as ci-escrow).
+        run: cargo install anchor-cli --version 0.30.1
 
       - name: Enable yarn
         run: corepack enable || npm install -g yarn@1.22.22
