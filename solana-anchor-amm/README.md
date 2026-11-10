@@ -111,7 +111,7 @@ A runnable demo command, an actual devnet swap, will be recorded alongside the p
 - Node 18 (18.19.1), yarn 1.22.22
 - TypeScript: @coral-xyz/anchor 0.30.1, @solana/web3.js 1.95.3, @solana/spl-token 0.4.6, typescript 5, mocha with ts-node, chai
 
-One version skew needs fixing by hand. The committed Cargo.lock is lockfile v4, which the cargo shipped inside platform-tools v1.41 (cargo 1.75) cannot read, while a current host cargo writes v4 by default. The fix is to drop a newer cargo binary into the platform-tools cache: cargo 1.78 is the first that reads v4 and the last that does not pass --check-cfg flags the sbf rustc 1.75 would reject. scripts/fix-sbf-cargo.sh does exactly that, pulling the cargo binary from the platform-tools v1.45 release on GitHub. Run it once after installing the Solana CLI, before the first anchor build. Keep Cargo.lock committed; without it a fresh resolve floats crates the old sbf toolchain cannot build.
+One version skew needs fixing by hand. The committed Cargo.lock is lockfile v4, which the cargo shipped inside platform-tools v1.41 (cargo 1.75) cannot read, while a current host cargo writes v4 by default. The fix is to drop a newer cargo binary into the platform-tools cache: cargo 1.78/1.79 read v4 and do not pass the --check-cfg flags the sbf rustc 1.75 would reject (cargo started emitting those at 1.80). scripts/fix-sbf-cargo.sh does exactly that, pulling the cargo 1.79 binary from the platform-tools v1.45 release on GitHub. Run it once after installing the Solana CLI, before the first anchor build. Keep Cargo.lock committed; without it a fresh resolve floats crates the old sbf toolchain cannot build.
 
 ## Build, test, deploy
 
