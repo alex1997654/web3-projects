@@ -56,6 +56,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: "solana-token22-vesting"
+          # v2 cache namespace: earlier runs saved artifacts built by the
+          # runner's leaked default compiler (pre RUSTUP_TOOLCHAIN pin),
+          # including proc-macro dylibs that misbehave under 1.99.1. Start
+          # the cache over under the pinned toolchain.
+          prefix-key: "vesting-v2"
 
       - name: Generate local test wallet
         run: bash scripts/setup-wallet.sh
