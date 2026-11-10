@@ -118,8 +118,8 @@ One version skew needs fixing by hand. The committed Cargo.lock is lockfile v4, 
 The program keypair is gitignored (it lives under target/), so a fresh clone deploys its own instance under its own address.
 
 ```bash
-git clone https://github.com/alex1997654/solana-anchor-amm.git
-cd solana-anchor-amm
+git clone https://github.com/alex1997654/web3-projects.git
+cd web3-projects/solana-anchor-amm
 yarn install
 ./scripts/fix-sbf-cargo.sh   # one-time, see Toolchain above
 mkdir -p wallets
