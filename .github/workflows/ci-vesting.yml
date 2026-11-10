@@ -5,6 +5,23 @@ on:
       - "solana-token22-vesting/**"
       - ".github/workflows/ci-vesting.yml"
   workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Pin every cargo invocation to 1.99.1, including the one anchor's IDL
+  # helper spawns (it honors RUSTUP_TOOLCHAIN; without this the runner's
+  # own default can leak through and the host graph lands on a compiler
+  # the pinned solana-sdk 1.18.26 does not compile on). cargo-build-sbf
+  # is unaffected: it invokes cargo +solana explicitly, which beats this
+  # variable.
+  RUSTUP_TOOLCHAIN: "1.99.1"
+  # The runner image exports RUSTC_BOOTSTRAP=1; without clearing it,
+  # proc-macro2's build probe flips into a code path this toolchain
+  # cannot compile. The vendored patches/proc-macro2 already refuses to
+  # emit that path, and clearing the variable keeps the host identical
+  # to the validated local environment.
+  RUSTC_BOOTSTRAP: ""
+
 jobs:
   test:
     runs-on: ubuntu-latest
