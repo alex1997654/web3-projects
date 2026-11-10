@@ -8,9 +8,9 @@ env:
   CARGO_TERM_COLOR: always
   # GitHub runner images export RUSTC_BOOTSTRAP=1, which flips
   # proc-macro2's build probe into its nightly-only code path. That path
-  # needs proc_macro APIs that current rustc removed, so the anchor 0.30.1
-  # IDL build dies on them. Keep the probes on the stable path.
-  RUSTC_BOOTSTRAP: "0"
+  # needs proc_macro::SourceFile, which rustc removed after 1.94, so the
+  # anchor 0.30.1 IDL build dies on newer compilers. 1.94.0 is therefore
+  # the host default here; it carries the API and passes either way.
 
 jobs:
   test:
@@ -24,15 +24,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1.99.1 is the job default: anchor 0.30.1's IDL build compiles its
-      # proc-macro graph against the stable proc_macro Span API, which 1.75
-      # does not have. 1.75.0 is installed only to build anchor-cli itself
-      # (its --locked lockfile predates newer rustc).
+      # 1.94.0 is the job default: anchor 0.30.1's IDL build probes the
+      # nightly proc_macro Span surface, which 1.75 lacks entirely and newer
+      # rustc has partially removed. 1.75.0 is installed only to build
+      # anchor-cli itself (its --locked lockfile predates newer rustc).
       - name: Install Rust
         run: |
-          rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+          rustup toolchain install 1.94.0 --profile minimal --component rustfmt --component clippy
           rustup toolchain install 1.75.0 --profile minimal
-          rustup default 1.99.1
+          rustup default 1.94.0
 
       - name: Install Solana CLI (Agave) 1.18.26
         run: |
