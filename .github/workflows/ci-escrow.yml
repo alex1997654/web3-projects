@@ -55,10 +55,11 @@ jobs:
       - name: Rust unit tests
         run: cargo test --locked -p escrow
 
-      - name: Generate a throwaway program keypair (never committed)
+      - name: Generate throwaway keypairs (never committed)
         run: |
           mkdir -p target/deploy
           solana-keygen new -o target/deploy/escrow-keypair.json --no-bip39-passphrase
+          solana-keygen new --no-bip39-passphrase
           anchor keys sync
 
       - name: anchor test (local validator, integration suite)
