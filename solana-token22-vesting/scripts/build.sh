@@ -12,7 +12,25 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# The SBF toolchain's cargo cannot read lockfile format v4, which host
+# cargo 1.99 rewrites the lock to on every resolving invocation. Check and
+# fail loudly instead of letting a v4 lock reach a build or a commit.
+LOCK_VERSION=$(sed -n '3s/version = //p' Cargo.lock)
+if [ "$LOCK_VERSION" = "4" ]; then
+  echo "Cargo.lock is format v4 (host cargo rewrote it); run:" >&2
+  echo "  sed -i '0,/^version = 4$/s//version = 3/' Cargo.lock" >&2
+  exit 1
+fi
+
 anchor build
+
+# anchor build may have rewritten the lock again during resolution.
+LOCK_VERSION=$(sed -n '3s/version = //p' Cargo.lock)
+if [ "$LOCK_VERSION" = "4" ]; then
+  echo "Cargo.lock was rewritten to v4 during the build; run:" >&2
+  echo "  sed -i '0,/^version = 4$/s//version = 3/' Cargo.lock" >&2
+  exit 1
+fi
 
 SHARED_SO=/home/ale/web3-projects/.target/sbf-solana-solana/release/token22_vesting.so
 LOCAL_DIR=target/deploy
