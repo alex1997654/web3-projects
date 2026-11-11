@@ -8,8 +8,24 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230d1117'/%3E%3Crect x='2' y='9' width='3' height='5' fill='%233fb950'/%3E%3Crect x='6.5' y='5' width='3' height='9' fill='%233fb950'/%3E%3Crect x='11' y='2' width='3' height='12' fill='%233fb950'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./styles.css" />
     <script type="module" src="./src/main.ts"></script>
-  </head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+.pf-bar{position:sticky;top:0;z-index:100;display:flex;align-items:baseline;gap:1.2rem;padding:.75rem 1.4rem;background:rgba(10,14,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #1d2735;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;}
+.pf-bar .pf-mark{color:#93a1b0;font-size:.78rem;letter-spacing:.02em;}
+.pf-bar .pf-mark b{color:#14f195;font-weight:600;}
+.pf-bar a.pf-back{color:#14f195;font-size:.82rem;text-decoration:none;margin-left:auto;}
+.pf-bar a.pf-back:hover{text-decoration:underline;}
+@media(max-width:560px){.pf-bar{padding:.65rem 1rem;gap:.8rem}.pf-bar .pf-mark{display:none}}
+</style>
+</head>
   <body>
+<header class="pf-bar">
+  <span class="pf-mark"><b>sol</b>/rust &middot; web3-projects</span>
+  <a class="pf-back" href="../../">&larr; all projects</a>
+</header>
+
     <header>
       <div class="title-block">
         <h1>solana-chain-dashboard</h1>
