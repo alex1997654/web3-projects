@@ -196,9 +196,9 @@ the program keypair, so yours will differ from the one above):
 
 ```
 yarn wallet
-solana airdrop 2 $(solana-keygen pubkey wallet/devnet-payer.json) --url devnet
-# repeat the airdrop until the payer holds ~4 SOL; program accounts are
-# rented, not staked
+# fund the payer at https://faucet.solana.com (the devnet RPC airdrop
+# endpoint is closed, HTTP 410, so `solana airdrop` no longer works);
+# ~5 SOL covers the program rent plus the demo transactions
 
 anchor build  # or scripts/build.sh, which also mirrors the .so into target/deploy
 anchor deploy --provider.cluster devnet --provider.wallet wallet/devnet-payer.json
