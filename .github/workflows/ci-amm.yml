@@ -81,6 +81,14 @@ jobs:
           # plus stale binary/IDL is exactly DeclaredProgramIdMismatch.
           rm -f target/deploy/amm.so
           rm -rf target/idl
+          # CI never deploys to devnet. anchor keys sync rewrites
+          # [programs.localnet] and declare_id! but leaves any
+          # [programs.devnet] entry stale; a stale entry makes the
+          # anchor test client target the old address while the
+          # deployed binary declares the fresh keypair id, which is
+          # DeclaredProgramIdMismatch on every instruction. Drop the
+          # devnet section so exactly one identity exists.
+          sed -i '/^\[programs\.devnet\]$/,/^\[/{/^\[programs\.devnet\]$/d;/^\[/!d}' Anchor.toml
           anchor keys sync
 
       - name: Build program
