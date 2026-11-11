@@ -6,6 +6,15 @@
     <meta name="description" content="Live Solana program activity, decoded in the browser from public RPC endpoints." />
     <title>solana-chain-dashboard</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230d1117'/%3E%3Crect x='2' y='9' width='3' height='5' fill='%233fb950'/%3E%3Crect x='6.5' y='5' width='3' height='9' fill='%233fb950'/%3E%3Crect x='11' y='2' width='3' height='12' fill='%233fb950'/%3E%3C/svg%3E" />
+    <!-- GitHub Pages serves this file as-is, but the raw ./src/main.ts module
+         is unusable there (served as video/mp2t), so visitors landing on the
+         project root get a page whose buttons do nothing. Redirect them to the
+         committed build. Local Vite dev/preview hosts are left alone. -->
+    <script>
+      if (location.protocol === 'https:' && !/^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(location.host)) {
+        location.replace('./dashboard/' + location.search + location.hash);
+      }
+    </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
