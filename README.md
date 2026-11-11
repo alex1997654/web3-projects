@@ -8,10 +8,10 @@ One repo, four example projects and the hand-written portfolio site that present
 
 | Project | What it is | Status |
 |---|---|---|
-| [solana-anchor-escrow](./solana-anchor-escrow) | Two-party SPL token escrow. PDA vaults, delegated authority, atomic take or cancel. | in progress |
-| [solana-anchor-amm](./solana-anchor-amm) | Constant-product AMM in Anchor. Checked u64 math, rounding direction fixed up front, slippage enforced on-chain. | in progress |
-| [solana-chain-dashboard](./solana-chain-dashboard) | Live on-chain activity dashboard. Pure client-side over public RPC/WebSocket endpoints, reconnect with backoff, decoder unit-tested in isolation. | in progress |
-| [solana-token22-vesting](./solana-token22-vesting) | Token-2022 vesting. Cliff plus linear release, multiple schedules, optional revocation of unvested tokens. | in progress |
+| [solana-anchor-escrow](./solana-anchor-escrow) | Two-party SPL token escrow. PDA vaults, delegated authority, atomic take or cancel. | deployed on devnet |
+| [solana-anchor-amm](./solana-anchor-amm) | Constant-product AMM in Anchor. Checked u64 math, rounding direction fixed up front, slippage enforced on-chain. | deployed on devnet |
+| [solana-chain-dashboard](./solana-chain-dashboard) | Live on-chain activity dashboard. Pure client-side over public RPC/WebSocket endpoints, reconnect with backoff, decoder unit-tested in isolation. | live demo |
+| [solana-token22-vesting](./solana-token22-vesting) | Token-2022 vesting. Cliff plus linear release, multiple schedules, optional revocation of unvested tokens. | deployed on devnet |
 
 Each Anchor project deploys to devnet and records its program ID in its own README with a verify command, once it lands.
 

@@ -98,7 +98,7 @@ Not deployed yet. The program will be deployed to devnet and the real ID recorde
 Verify it, and poke an existing pool by deriving its address from the two mint pubkeys with the seeds above:
 
 ```bash
-solana program show <PROGRAM_ID> --url devnet
+solana program show DWqPzswcf4rvZSb5yGj14Cy7fnyGvrgUM17N4WnkLheY --url devnet
 solana account <POOL_PDA> --url devnet
 spl-token supply <LP_MINT_PDA> --url devnet
 ```
