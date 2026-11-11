@@ -8,44 +8,45 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  # 1.94.0 host, same as ci-escrow's green job. Two reasons: anchor
-  # 0.30.1's IDL helper probes the proc_macro Span surface, which rustc
-  # after 1.94 has partially removed, and this cargo-build-sbf build
-  # mismanages its rustup toolchain selection when the pinned host is
-  # newer (literal '{toolchain}' placeholder error). The vendored
-  # patches keep the graph buildable regardless; 1.94.0 is simply the
-  # version where everything lines up on the runner image.
-  RUSTUP_TOOLCHAIN: "1.94.0"
+  # Keep RUSTUP_TOOLCHAIN unset everywhere: the anchor 0.30.1 IDL helper
+  # reads it and runs cargo with a broken interpolated toolchain argument
+  # (the literal '{toolchain}' error). The rustup default set below is what
+  # every cargo invocation sees. Same lesson ci-escrow documented.
 
 jobs:
   test:
+    name: fmt, clippy, anchor test
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: solana-token22-vesting
     steps:
       - uses: actions/checkout@v4
 
+      # Single toolchain, 1.99.1, the same host this project is validated
+      # on locally. The vendored patches under patches/ (anchor-syn,
+      # proc-macro2 without the super_unstable emission, ark-ff-macros
+      # with tolerant MontFp parsing) keep the whole graph buildable here.
+      - name: Install Rust 1.99.1
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+          rustup default 1.99.1
+
+      - name: Install Solana CLI (Agave) 1.18.26
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v1.18.26/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      # No --locked: anchor-cli 0.30.1's published lockfile pins deps that
+      # fail type inference on rustc 1.99 (E0282); the open resolution
+      # compiles.
+      - name: Install Anchor CLI 0.30.1
+        run: cargo install anchor-cli --version 0.30.1
+
       - uses: actions/setup-node@v4
         with:
           node-version: "18.19.1"
-
-      - name: Install Rust 1.94.0
-        run: |
-          rustup toolchain install 1.94.0 --profile minimal
-          rustup default 1.94.0
-
-      - name: Install Solana CLI 1.18.26
-        run: |
-          curl -sSfL https://release.anza.xyz/v1.18.26/install | sh
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
-
-      - name: Install Anchor CLI 0.30.1
-        # cargo install, not npm: the npm wrapper drives the IDL helper with
-        # its own environment. No --locked: anchor-cli 0.30.1's published
-        # lockfile pins deps that fail type inference on rustc 1.99; the
-        # open resolution compiles (same lesson as ci-escrow).
-        run: cargo install anchor-cli --version 0.30.1
 
       - name: Enable yarn
         run: corepack enable || npm install -g yarn@1.22.22
@@ -55,32 +56,14 @@ jobs:
       - name: Install JS dependencies
         run: yarn install --frozen-lockfile
 
-      # No rust-cache: it also restores ~/.rustup state, including the
-      # rustup 'solana' toolchain link that cargo-build-sbf manages, and a
-      # link restored from a run where it was created with a relative path
-      # breaks every later SBF build with a literal '{toolchain}' error.
-      # Cold builds cost minutes; the link always starts clean this way.
-
       - name: Generate local test wallet
         run: bash scripts/setup-wallet.sh
-
-      - name: anchor test (build, local validator, integration suite)
-        run: anchor test
-
-  lint:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: solana-token22-vesting
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: dtolnay/rust-toolchain@1.99.1
-        with:
-          components: rustfmt, clippy
 
       - name: cargo fmt
         run: cargo fmt --all -- --check
 
       - name: cargo clippy
         run: cargo clippy -p token22_vesting --all-targets -- -D warnings
+
+      - name: anchor test (build, local validator, integration suite)
+        run: anchor test
