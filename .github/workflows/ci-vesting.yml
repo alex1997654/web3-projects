@@ -8,19 +8,14 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  # Pin every cargo invocation to 1.99.1, including the one anchor's IDL
-  # helper spawns (it honors RUSTUP_TOOLCHAIN; without this the runner's
-  # own default can leak through and the host graph lands on a compiler
-  # the pinned solana-sdk 1.18.26 does not compile on). cargo-build-sbf
-  # is unaffected: it invokes cargo +solana explicitly, which beats this
-  # variable.
-  RUSTUP_TOOLCHAIN: "1.99.1"
-  # RUSTC_BOOTSTRAP stays at the runner default (1). Setting it to an
-  # empty string breaks this cargo-build-sbf build: its script takes a
-  # path with an unexpanded {toolchain} placeholder whenever the
-  # variable is set-but-empty. The vendored patches/proc-macro2 already
-  # refuses to emit the nightly-only code path that RUSTC_BOOTSTRAP=1
-  # would otherwise unlock, so the default is safe here.
+  # 1.94.0 host, same as ci-escrow's green job. Two reasons: anchor
+  # 0.30.1's IDL helper probes the proc_macro Span surface, which rustc
+  # after 1.94 has partially removed, and this cargo-build-sbf build
+  # mismanages its rustup toolchain selection when the pinned host is
+  # newer (literal '{toolchain}' placeholder error). The vendored
+  # patches keep the graph buildable regardless; 1.94.0 is simply the
+  # version where everything lines up on the runner image.
+  RUSTUP_TOOLCHAIN: "1.94.0"
 
 jobs:
   test:
@@ -35,7 +30,10 @@ jobs:
         with:
           node-version: "18.19.1"
 
-      - uses: dtolnay/rust-toolchain@1.99.1
+      - name: Install Rust 1.94.0
+        run: |
+          rustup toolchain install 1.94.0 --profile minimal
+          rustup default 1.94.0
 
       - name: Install Solana CLI 1.18.26
         run: |
