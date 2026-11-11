@@ -12,7 +12,11 @@
          project root get a page whose buttons do nothing. Redirect them to the
          committed build. Local Vite dev/preview hosts are left alone. -->
     <script>
-      if (location.protocol === 'https:' && !/^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(location.host)) {
+      if (
+        location.protocol === 'https:' &&
+        !/^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(location.host) &&
+        !location.pathname.endsWith('/dashboard/')
+      ) {
         location.replace('./dashboard/' + location.search + location.hash);
       }
     </script>
