@@ -64,8 +64,27 @@
         <li>Anchor escrow: SPL tokens held in PDA vaults, taken or cancelled atomically</li>
         <li>A constant-product AMM in Anchor, checked u64 math, rounding decided on paper first</li>
         <li>A live chain activity dashboard, pure client-side over public endpoints</li>
-        <li>Token-2022 vesting with cliff and linear release</li>
       </ul>
+      <div class="card">
+        <h3>Token-2022 vesting</h3>
+        <p>
+          Anchor program for Token-2022 vesting: cliff plus linear release,
+          multiple schedules per beneficiary, and revocation that returns only
+          the unvested part. Twelve integration tests cover the claim edges,
+          from the cliff boundary to maturity, over-claiming and concurrent
+          schedules. The interesting part is the account handling: this
+          chain's Token-2022 writes 170-byte token accounts where anchor-spl
+          models 165, and deserializing them traps the program. So the program
+          treats token accounts as raw AccountInfo, reads balances from fixed
+          base offsets, and packs every Token-2022 instruction by hand.
+        </p>
+        <p class="muted">
+          <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-token22-vesting">repo</a> ·
+          <a href="https://alex1997654.github.io/web3-projects/solana-token22-vesting/app/">demo</a> ·
+          devnet: <code>A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF</code> ·
+          <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-vesting.yml/badge.svg" alt="CI">
+        </p>
+      </div>
       <p class="muted">Repos, devnet program IDs and demos will be linked here as each goes public.</p>
     </section>
 

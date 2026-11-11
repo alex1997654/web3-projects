@@ -81,6 +81,17 @@ footer {
   font-size: 0.85rem;
 }
 
+.card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.1rem;
+}
+.card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
 @media (max-width: 640px) {
   main { padding-top: 2rem; }
   h1 { font-size: 1.5rem; }

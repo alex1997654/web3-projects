@@ -211,7 +211,7 @@ els.createMint.addEventListener("click", async () => {
         mint.publicKey, DECIMALS, walletPublicKey, walletPublicKey, TOKEN2022
       ),
       spl.createAssociatedTokenAccountInstruction(
-        walletPublicKey, ata, walletPublicKey, mint.publicKey, ATA_PROGRAM, TOKEN2022
+        walletPublicKey, ata, walletPublicKey, mint.publicKey, TOKEN2022, ATA_PROGRAM
       ),
       spl.createMintToInstruction(
         mint.publicKey, ata, walletPublicKey, supply, [], TOKEN2022

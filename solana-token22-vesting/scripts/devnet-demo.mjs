@@ -107,7 +107,7 @@ tx.add(
     programId: TOKEN2022,
   }),
   spl.createInitializeMint2Instruction(mint.publicKey, DECIMALS, payer.publicKey, payer.publicKey, TOKEN2022),
-  spl.createAssociatedTokenAccountInstruction(payer.publicKey, payerAta, payer.publicKey, mint.publicKey, ATA_PROGRAM, TOKEN2022),
+  spl.createAssociatedTokenAccountInstruction(payer.publicKey, payerAta, payer.publicKey, mint.publicKey, TOKEN2022, ATA_PROGRAM),
   spl.createMintToInstruction(mint.publicKey, payerAta, payer.publicKey, supply, [], TOKEN2022)
 );
 tx.feePayer = payer.publicKey;
