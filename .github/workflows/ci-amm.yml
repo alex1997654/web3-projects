@@ -76,6 +76,11 @@ jobs:
           mkdir -p wallets target/deploy
           solana-keygen new --no-bip39-passphrase --force -o wallets/dev.json
           solana-keygen new --no-bip39-passphrase --force -o target/deploy/amm-keypair.json
+          # Cached artifacts from earlier runs carry the previous random
+          # program identity in the .so binary and the IDL; a fresh keypair
+          # plus stale binary/IDL is exactly DeclaredProgramIdMismatch.
+          rm -f target/deploy/amm.so
+          rm -rf target/idl
           anchor keys sync
 
       - name: Build program
