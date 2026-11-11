@@ -1,4 +1,5 @@
 import { CLUSTERS, type ClusterDef, type ProgramDef } from './programs'
+import { resolveEndpoint, storeKey } from './endpoint'
 import { parseLogMessages, type DecodedField } from './decoder'
 import { SessionStats, type TradeRow } from './stats'
 import { SolanaFeed, type FeedStatus, type LogNotification } from './ws'
@@ -13,6 +14,9 @@ const programSelect = document.getElementById('program') as HTMLSelectElement
 const endpointInput = document.getElementById('endpoint') as HTMLInputElement
 const connectButton = document.getElementById('connect') as HTMLButtonElement
 const programNote = document.getElementById('program-note') as HTMLParagraphElement
+const keyPrompt = document.getElementById('key-prompt') as HTMLDivElement
+const keyInput = document.getElementById('rpc-key') as HTMLInputElement
+const keySave = document.getElementById('key-save') as HTMLButtonElement
 const repoLink = document.getElementById('repo-link') as HTMLAnchorElement
 
 let feed: SolanaFeed | null = null
@@ -149,6 +153,7 @@ function shortish(v: string | number | boolean | bigint): string {
 function onStatus(status: FeedStatus): void {
   ui.setStatus(status, Date.now())
   if (status.state === 'live') {
+    keyPrompt.hidden = true
     connectButton.textContent = 'disconnect'
     connectButton.classList.add('stop')
   } else if (status.state === 'idle') {
@@ -185,6 +190,10 @@ function startFeed(freshSession: boolean): void {
     onStatus,
     onNotification: handleNotification,
     onNotice: (message) => ui.setNotice(message),
+    onRefused: () => {
+      keyPrompt.hidden = false
+      ui.setNotice(null)
+    },
   })
   feed.start()
 }
@@ -221,7 +230,7 @@ clusterSelect.addEventListener('change', () => {
   const found = CLUSTERS.find((c) => c.id === clusterSelect.value)
   if (found === undefined) return
   currentCluster = found
-  endpointInput.value = currentCluster.wsDefault
+  endpointInput.value = resolveEndpoint(currentCluster.id)
   populatePrograms()
 })
 
@@ -237,13 +246,26 @@ connectButton.addEventListener('click', () => {
   if (feed !== null) {
     stopFeed()
     ui.setNotice(null)
+    keyPrompt.hidden = true
     return
   }
   startFeed(true)
 })
 
+keySave.addEventListener('click', () => {
+  const key = keyInput.value.trim()
+  if (key === '') {
+    keyInput.focus()
+    return
+  }
+  storeKey(key)
+  keyPrompt.hidden = true
+  endpointInput.value = resolveEndpoint(currentCluster.id)
+  startFeed(true)
+})
+
 populateClusters()
-endpointInput.value = currentCluster.wsDefault
+endpointInput.value = resolveEndpoint(currentCluster.id)
 populatePrograms()
 
 setInterval(() => {

@@ -106,6 +106,40 @@ describe('SolanaFeed', () => {
     ])
   })
 
+  it('gives up and fires onRefused after two refused handshakes', () => {
+    let refused = 0
+    feed = makeFeed({ onRefused: () => { refused += 1 } })
+    feed.start()
+    // First socket is closed before it ever opened: handshake refused.
+    sockets[0]!.close()
+    const st = latestStatus()
+    expect(st.state).toBe('reconnecting')
+    vi.advanceTimersByTime(61_000)
+    expect(sockets).toHaveLength(2)
+    // Second refusal: the feed stops instead of retrying forever.
+    sockets[1]!.close()
+    expect(refused).toBe(1)
+    expect(latestStatus()).toEqual({ state: 'idle' })
+    expect(sockets).toHaveLength(2)
+    vi.advanceTimersByTime(120_000)
+    expect(sockets).toHaveLength(2)
+  })
+
+  it('resets the refusal counter after a successful open', () => {
+    let refused = 0
+    feed = makeFeed({ onRefused: () => { refused += 1 } })
+    feed.start()
+    sockets[0]!.close() // refused once
+    vi.advanceTimersByTime(61_000)
+    connectThroughAck(1) // opens fine and goes live
+    sockets[1]!.close() // normal drop after a successful open
+    expect(refused).toBe(0)
+    expect(latestStatus().state).toBe('reconnecting')
+    vi.advanceTimersByTime(61_000)
+    connectThroughAck(2)
+    expect(latestStatus().state).toBe('live')
+  })
+
   it('reconnects with attempt 1 after an early drop', () => {
     feed = makeFeed()
     feed.start()

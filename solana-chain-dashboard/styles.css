@@ -216,3 +216,22 @@ footer a { color: var(--muted); }
   .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat.wallets { grid-column: 1 / -1; }
 }
+.key-prompt {
+  margin-top: 0.8rem;
+}
+.key-prompt p {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.key-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+.key-row input {
+  flex: 1;
+}
+.key-row .muted {
+  margin-top: 0.5rem;
+}

@@ -4,6 +4,18 @@
 
 Live demo: https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/
 
+## Why an API key
+
+Keyless public Solana RPC endpoints refuse WebSocket handshakes from any
+browser origin with HTTP 403 (verified against mainnet-beta, devnet,
+testnet, publicnode, drpc, and projectserum; only Origin-less clients such
+as curl or node pass). The page therefore defaults to a free-tier keyed
+endpoint. When the bundled demo key is absent or rejected, the feed stops
+after two refused handshakes and the page asks the visitor to create their
+own free key and paste it. Visitor keys are kept in localStorage and sent
+only to the RPC endpoint. Everything still runs client-side: no backend, no
+tracking.
+
 ## What this is
 
 A live on-chain activity dashboard that runs entirely in the browser. It opens one WebSocket to a public Solana RPC endpoint, subscribes to a chosen program's transaction logs, decodes the Anchor events from the raw log lines client-side, and renders a rolling feed plus session stats: events per minute, cumulative SOL volume where the events carry amounts, and the top interacting wallets of the session.

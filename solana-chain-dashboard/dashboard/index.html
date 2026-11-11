@@ -30,8 +30,8 @@
 .pf-bar a.pf-back:hover{text-decoration:underline;}
 @media(max-width:560px){.pf-bar{padding:.65rem 1rem;gap:.8rem}.pf-bar .pf-mark{display:none}}
 </style>
-  <script type="module" crossorigin src="./assets/index-BNawBQfI.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-IzjRlLuT.css">
+  <script type="module" crossorigin src="./assets/index-C1cl7yGN.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Dmt4ckgc.css">
 </head>
   <body>
 <header class="pf-bar">
@@ -63,6 +63,19 @@
       <button id="connect" class="primary">connect</button>
     </section>
     <p id="notice" class="notice" hidden></p>
+    <div id="key-prompt" class="panel key-prompt" hidden>
+      <p>
+        Keyless public RPC endpoints refuse connections from web pages, so this
+        dashboard needs a free API key. Create one at
+        <a href="https://dashboard.helius.com/" target="_blank" rel="noreferrer">dashboard.helius.com</a>
+        (free tier, no card needed), paste it below, and connect again.
+      </p>
+      <div class="key-row">
+        <input id="rpc-key" type="text" placeholder="your Helius API key" spellcheck="false" autocomplete="off" />
+        <button id="key-save" class="primary">save key and connect</button>
+      </div>
+      <p class="muted">The key stays in this browser and is sent to the RPC endpoint only.</p>
+    </div>
     <p id="program-note" class="program-note"></p>
 
     <section id="stats" class="stats-grid">

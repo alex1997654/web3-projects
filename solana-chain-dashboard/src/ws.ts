@@ -21,6 +21,11 @@ export interface FeedOptions {
   readonly onStatus: (status: FeedStatus) => void
   readonly onNotification: (n: LogNotification) => void
   readonly onNotice: (message: string) => void
+  /** Fired when the endpoint refused the WebSocket handshake twice in a
+   * row (closed before opening). Keyless public RPCs do this to any
+   * browser origin with HTTP 403; the feed stops retrying and hands the
+   * problem to the UI so it can ask for a working endpoint. */
+  readonly onRefused?: () => void
   /** Injectable for tests and the reconnect verification script; the
    * default is the browser WebSocket. */
   readonly socketFactory?: (url: string) => WebSocket
@@ -62,6 +67,8 @@ export class SolanaFeed {
   private openedAt = 0
   private stopped = true
   private lastSlot: number | null = null
+  private refusals = 0
+  private socketOpened = false
 
   constructor(private readonly opts: FeedOptions) {}
 
@@ -69,6 +76,7 @@ export class SolanaFeed {
     if (!this.stopped) return
     this.stopped = false
     this.attempt = 0
+    this.refusals = 0
     this.connect()
   }
 
@@ -76,6 +84,15 @@ export class SolanaFeed {
     this.stopped = true
     this.teardown()
     this.opts.onStatus({ state: 'idle' })
+  }
+
+  /** The endpoint will not take this client at all; stop retrying and
+   * let the UI ask for a usable endpoint (see onRefused). */
+  private giveUp(): void {
+    this.stopped = true
+    this.teardown()
+    this.opts.onStatus({ state: 'idle' })
+    this.opts.onRefused?.()
   }
 
   private teardown(): void {
@@ -112,7 +129,12 @@ export class SolanaFeed {
     this.openedAt = Date.now()
     this.lastMessageAt = this.openedAt
     this.ws = ws
+    let opened = false
+    this.socketOpened = false
     ws.onopen = () => {
+      opened = true
+      this.socketOpened = true
+      this.refusals = 0
       ws.send(
         JSON.stringify({
           jsonrpc: '2.0',
@@ -132,6 +154,13 @@ export class SolanaFeed {
       if (this.stallTimer !== null) {
         clearInterval(this.stallTimer)
         this.stallTimer = null
+      }
+      if (!opened) {
+        this.refusals += 1
+        if (this.refusals >= 2) {
+          this.giveUp()
+          return
+        }
       }
       this.scheduleReconnect()
     }
@@ -153,6 +182,9 @@ export class SolanaFeed {
   private stallTick(): void {
     if (this.stopped || this.ws === null) return
     if (this.opts.stallTimeoutMs <= 0) return
+    // Only judge sockets that completed the handshake. A connection still
+    // trying to open is the reconnect ladder's business, not a stall.
+    if (!this.socketOpened) return
     const quietFor = Date.now() - this.lastMessageAt
     if (quietFor > this.opts.stallTimeoutMs) {
       this.opts.onNotice('no messages for ' + Math.round(quietFor / 1000) + 's, forcing reconnect')
