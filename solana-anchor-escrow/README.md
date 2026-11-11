@@ -46,12 +46,12 @@ Four instructions:
 
 ## Devnet
 
-Program ID: `__PROGRAM_ID__` (deployed by the author; the deploy keypair never leaves the operator machine)
+Program ID: `9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo` (deployed by the author; the deploy keypair never leaves the operator machine)
 
 Verify it is live:
 
 ```
-solana program show __PROGRAM_ID__ --url devnet
+solana program show 9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo --url devnet
 ```
 
 Try it without building anything: the static demo at https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/ walks a full offer, take, and refund cycle with a Phantom wallet on devnet. It creates throwaway tokens for you.
