@@ -15,6 +15,7 @@
     "lint": "eslint .",
     "verify:live": "vite-node scripts/verify-live.ts",
     "verify:reconnect": "vite-node scripts/verify-reconnect.ts",
+    "demo:sync": "npm run build && rm -rf dashboard && cp -r dist dashboard",
     "dump": "vite-node scripts/dump-events.ts"
   },
   "engines": {

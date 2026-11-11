@@ -1,8 +1,8 @@
 # solana-chain-dashboard
 
-[![ci](https://github.com/alex1997654/solana-chain-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/alex1997654/solana-chain-dashboard/actions/workflows/ci.yml)
+[![ci](https://github.com/alex1997654/web3-projects/actions/workflows/ci-dashboard.yml/badge.svg)](https://github.com/alex1997654/web3-projects/actions/workflows/ci-dashboard.yml)
 
-Live demo: https://alex1997654.github.io/solana-chain-dashboard/
+Live demo: https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/
 
 ## What this is
 
@@ -86,7 +86,10 @@ npm run build       # typecheck + production build into dist/
 npm run preview     # serve dist/ locally
 npm run verify:live # decode live mainnet pump.fun traffic, exit nonzero on drift
 npm run verify:reconnect # live: force a socket drop mid-stream, require full recovery
+npm run demo:sync # rebuild + copy dist/ into the committed dashboard/ folder Pages serves
 ```
+
+The demo is the committed `dashboard/` build folder, served by the monorepo's branch-based Pages at the URL above. CI fails if `dashboard/` drifts from a fresh build (`diff -r dist dashboard`), so the demo cannot silently go stale. `demo:sync` uses POSIX cp; on Windows copy `dist/` to `dashboard/` manually.
 
 No environment variables, no keys, no accounts. Nothing to configure.
 

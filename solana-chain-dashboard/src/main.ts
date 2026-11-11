@@ -252,4 +252,4 @@ setInterval(() => {
   ui.refreshStatus(now)
 }, 500)
 
-repoLink.href = 'https://github.com/' + (document.location.hostname.split('.')[0]) + '/solana-chain-dashboard'
+repoLink.href = 'https://github.com/alex1997654/web3-projects/tree/main/solana-chain-dashboard'

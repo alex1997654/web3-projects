@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Live Solana program activity, decoded in the browser from public RPC endpoints." />
+    <title>solana-chain-dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230d1117'/%3E%3Crect x='2' y='9' width='3' height='5' fill='%233fb950'/%3E%3Crect x='6.5' y='5' width='3' height='9' fill='%233fb950'/%3E%3Crect x='11' y='2' width='3' height='12' fill='%233fb950'/%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="./assets/index-BNawBQfI.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-IzjRlLuT.css">
+  </head>
+  <body>
+    <header>
+      <div class="title-block">
+        <h1>solana-chain-dashboard</h1>
+        <p class="subtitle">live program activity, decoded in your browser from public RPC</p>
+      </div>
+      <div class="status-block">
+        <span id="status-pill" class="pill idle">idle</span>
+        <span id="slot" class="slot mono"></span>
+      </div>
+    </header>
+
+    <section id="controls" class="panel">
+      <label>cluster
+        <select id="cluster"></select>
+      </label>
+      <label>program
+        <select id="program"></select>
+      </label>
+      <label class="grow">endpoint
+        <input id="endpoint" type="text" spellcheck="false" autocomplete="off" />
+      </label>
+      <button id="connect" class="primary">connect</button>
+    </section>
+    <p id="notice" class="notice" hidden></p>
+    <p id="program-note" class="program-note"></p>
+
+    <section id="stats" class="stats-grid">
+      <div class="stat"><span class="stat-label">events / min</span><span id="st-epm" class="stat-value mono">0</span></div>
+      <div class="stat"><span class="stat-label">session events</span><span id="st-total" class="stat-value mono">0</span></div>
+      <div class="stat"><span class="stat-label">volume (SOL)</span><span id="st-volume" class="stat-value mono">0.000</span></div>
+      <div class="stat"><span class="stat-label">buys / sells</span><span id="st-trades" class="stat-value mono">0 / 0</span></div>
+      <div class="stat"><span class="stat-label">failed tx</span><span id="st-failed" class="stat-value mono">0</span></div>
+      <div class="stat wallets"><span class="stat-label">top wallets (session)</span><ol id="st-wallets" class="wallet-list mono"></ol></div>
+    </section>
+
+    <section id="feed-panel" class="panel">
+      <div class="feed-head">
+        <span>event feed</span>
+        <span id="feed-meta" class="muted mono"></span>
+      </div>
+      <ul id="feed" class="feed mono"></ul>
+      <p id="feed-empty" class="feed-empty">connecting will fill this list</p>
+    </section>
+
+    <footer>
+      <span>data: <span id="footer-endpoint" class="mono"></span></span>
+      <span>everything runs client-side; no backend, no tracking</span>
+      <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-chain-dashboard" id="repo-link">source</a>
+    </footer>
+  </body>
+</html>
