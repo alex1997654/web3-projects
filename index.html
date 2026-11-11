@@ -3,141 +3,139 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Solana Rust Developer</title>
-  <meta name="description" content="Rust developer working on Solana at the systems level. Production mainnet infrastructure, on-chain programs, and the tooling around them.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230d1117'/%3E%3Cpath d='M4 5h8l-2.5 2.5H4zM4 8.5h5.5L7 11H4z' fill='%2314f195'/%3E%3C/svg%3E">
+  <title>Solana Rust Developer — Selected Work</title>
+  <meta name="description" content="Rust developer working on Solana at the systems level. Anchor programs, on-chain infrastructure, live devnet deployments you can verify yourself.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230a0e14'/%3E%3Cpath d='M4 5h8l-2.5 2.5H4zM4 8.5h5.5L7 11H4z' fill='%2314f195'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <nav>
-    <span class="mark">sol&nbsp;/&nbsp;rust</span>
+  <nav id="nav">
+    <span class="mark">sol<span class="mark-dim">/</span>rust</span>
     <div class="links">
-      <a href="https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/">Escrow demo</a>
-      <a href="https://alex1997654.github.io/web3-projects/solana-token22-vesting/app/">Vesting demo</a>
-      <a href="https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/">Dashboard</a>
-      <a href="https://github.com/alex1997654">GitHub</a>
+      <a href="#work">Work</a>
+      <a href="#system">Production system</a>
+      <a href="#contact">Contact</a>
+      <a class="gh" href="https://github.com/alex1997654/web3-projects">GitHub</a>
     </div>
   </nav>
 
+  <header class="hero">
+    <p class="kicker reveal">Solana and Rust, one person, end to end</p>
+    <h1 class="reveal">Programs and infrastructure for the chain, built to be <span class="grad">verified</span>.</h1>
+    <p class="lede reveal">I write Rust at the systems level: Anchor programs with their math worked out on paper first, and the real-time ingestion and execution infrastructure around them. Every project below is deployed on devnet with its program ID printed here, so you can check it yourself, in a terminal, right now.</p>
+    <div class="hero-cta reveal">
+      <a class="btn primary" href="#work">See the work</a>
+      <a class="btn ghost" href="https://github.com/alex1997654/web3-projects">Read the source</a>
+      <span class="live-badge" id="devnet-badge" title="Portfolio devnet payer, live balance from a public RPC">
+        <span class="dot" id="devnet-dot"></span><span id="devnet-text">checking devnet…</span>
+      </span>
+    </div>
+  </header>
+
   <main>
-    <section id="about">
-      <h1>Rust for Solana, at the systems level.</h1>
-      <p>
-        I write Rust for Solana. Most of my work sits below where frameworks start:
-        real-time chain ingestion over Geyser gRPC, transactions assembled
-        instruction by instruction against program IDLs, and an execution path that
-        sizes priority fees and Jito tips per trade from live market state. Above
-        that I build the APIs, dashboards and operational tooling a running system
-        needs.
-      </p>
-      <p>
-        Day to day that means PDA derivation, account layouts, Token-2022 quirks,
-        ATA lifecycles, wSOL handling, compute-unit budgeting, simulation and
-        confirmation logic. From on-chain programs to the infrastructure around
-        them, one person, end to end.
-      </p>
+    <section id="work">
+      <div class="sec-head reveal">
+        <h2>Selected work <span class="count">04</span></h2>
+        <p class="muted">Case studies, not screenshots. Each card carries the devnet program ID where one exists.</p>
+      </div>
+
+      <article class="card reveal">
+        <div class="card-top">
+          <span class="num">01</span>
+          <span class="chip ok">Deployed on devnet</span>
+        </div>
+        <h3>Anchor escrow</h3>
+        <p class="desc">Two-party SPL token escrow with PDA vaults and delegated authority. Offer, atomic take, cancel and refund, all enforced by account constraints rather than trust. The demo walks a full cycle with a Phantom wallet and mints throwaway tokens for you.</p>
+        <ul class="tags"><li>Rust</li><li>Anchor 0.30</li><li>SPL Token</li><li>TypeScript</li></ul>
+        <div class="pid">
+          <code>9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo</code>
+          <button class="copy" data-copy="solana program show 9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo --url devnet">copy verify</button>
+        </div>
+        <div class="card-links">
+          <a href="./solana-anchor-escrow/">source</a>
+          <a href="https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/">live demo</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top">
+          <span class="num">02</span>
+          <span class="chip wip">Deploy pending</span>
+        </div>
+        <h3>Constant-product AMM</h3>
+        <p class="desc">Four instructions, one pool per token pair, no admin authority anywhere. The hard parts are the math and the account layout: checked u64 arithmetic, a rounding direction fixed before any code was written, and slippage enforced inside the program.</p>
+        <ul class="tags"><li>Rust</li><li>Anchor 0.30</li><li>SPL Token</li><li>CLI demo</li></ul>
+        <div class="card-links">
+          <a href="./solana-anchor-amm/">source</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top">
+          <span class="num">03</span>
+          <span class="chip ok">Live demo</span>
+        </div>
+        <h3>Chain dashboard</h3>
+        <p class="desc">Live on-chain activity in the browser, with nothing behind it: no backend, no database. Public WebSocket endpoints, decoding client-side, reconnect with backoff when the endpoint pushes back. The decoder is a standalone module with its own unit tests.</p>
+        <ul class="tags"><li>TypeScript</li><li>Vite</li><li>WebSocket</li><li>Solana RPC</li></ul>
+        <div class="card-links">
+          <a href="./solana-chain-dashboard/">source</a>
+          <a href="https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/">live demo</a>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card-top">
+          <span class="num">04</span>
+          <span class="chip ok">Deployed on devnet</span>
+        </div>
+        <h3>Token-2022 vesting</h3>
+        <p class="desc">Cliff plus linear release on Token-2022, one PDA per schedule, multiple concurrent schedules per beneficiary, optional revocation that returns unvested tokens only. Claim math is capped at the total, so nobody can over-claim, including the beneficiary.</p>
+        <ul class="tags"><li>Rust</li><li>Anchor 0.30</li><li>Token-2022</li><li>TypeScript</li></ul>
+        <div class="pid">
+          <code>A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF</code>
+          <button class="copy" data-copy="solana program show A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF --url devnet">copy verify</button>
+        </div>
+        <div class="card-links">
+          <a href="./solana-token22-vesting/">source</a>
+        </div>
+      </article>
     </section>
 
     <section id="system">
-      <h2>Private production system</h2>
-      <p>
-        Automated trading infrastructure on Solana. A 24-crate Rust workspace:
-        Yellowstone Geyser gRPC ingestion, protocol decoders for the venues it
-        trades, GPU-resident strategy evaluation, and a real transaction execution
-        path carrying live capital. It has been running continuously on mainnet
-        since 2026 and I maintain it alone.
-      </p>
-      <p>
-        The source is private. Available to review under NDA. No wallet addresses
-        or transaction history are published, mine or the system's.
-      </p>
-    </section>
-
-    <section id="projects">
-      <h2>Example projects</h2>
-      <p>
-        Public examples, built to be inspected rather than admired. Each one is a
-        devnet-deployed program with tests running in CI and a writeup of the
-        design decisions. They are being published as they land:
-      </p>
-      <div class="card">
-        <h3>Anchor escrow</h3>
-        <p>
-          Two-party SPL token escrow. The maker locks an offer of token A into a
-          PDA vault and asks for token B in return. A taker pays the proportional
-          share and receives the matching slice in one transaction, or takes the
-          whole remaining offer at once. Partial takes round the owed token B
-          up, against the taker, so the maker never eats rounding debt. Expiry
-          is a strict boundary and refund is maker-only.
-        </p>
-        <p>
-          Twelve integration tests run the lifecycle in CI: full and partial
-          takes, takes at the boundary, expiry enforcement, and a non-maker
-          cancel attempt that fails on the PDA seed constraint.
-        </p>
-        <p class="muted">
-          <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-anchor-escrow">repo</a> ·
-          <a href="https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/">demo</a> ·
-          devnet: <code>9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo</code> ·
-          <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-escrow.yml/badge.svg" alt="CI">
-        </p>
+      <div class="confidential reveal">
+        <div class="card-top">
+          <span class="num">00</span>
+          <span class="chip nda">Confidential</span>
+        </div>
+        <h3>Private production system</h3>
+        <p class="desc">The work that pays for the work above. An automated trading system on Solana mainnet: a 24-crate Rust workspace, real-time ingestion over Yellowstone Geyser gRPC, protocol decoders, GPU-resident strategy evaluation, and a real execution path carrying live capital since 2026. Built and maintained by one person.</p>
+        <p class="desc muted">Source available under NDA. No wallet addresses or transaction history are published, mine or the system's.</p>
       </div>
-      <div class="card">
-        <h3>Token-2022 vesting</h3>
-        <p>
-          Anchor program for Token-2022 vesting: cliff plus linear release,
-          multiple schedules per beneficiary, and revocation that returns only
-          the unvested part. Twelve integration tests cover the claim edges,
-          from the cliff boundary to maturity, over-claiming and concurrent
-          schedules. The interesting part is the account handling: this
-          chain's Token-2022 writes 170-byte token accounts where anchor-spl
-          models 165, and deserializing them traps the program. So the program
-          treats token accounts as raw AccountInfo, reads balances from fixed
-          base offsets, and packs every Token-2022 instruction by hand.
-        </p>
-        <p class="muted">
-          <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-token22-vesting">repo</a> ·
-          <a href="https://alex1997654.github.io/web3-projects/solana-token22-vesting/app/">demo</a> ·
-          devnet: <code>A8MoJRBGw2k9MEgK9wzxjtVgpRfYLKQD6UuF9weSAdoF</code> ·
-          <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-vesting.yml/badge.svg" alt="CI">
-        </p>
-      </div>
-      <div class="card">
-        <h3>Chain activity dashboard</h3>
-        <p>
-          A live on-chain activity dashboard that runs entirely in the browser.
-          One WebSocket to a public RPC endpoint, transaction logs for a chosen
-          program, and Anchor events decoded from the raw log lines
-          client-side, with session stats alongside: events per minute,
-          cumulative SOL volume where events carry amounts, and the top
-          interacting wallets of the session.
-        </p>
-        <p>
-          No backend, no database, no build-time secrets. The default view
-          watches pump.fun's bonding curve program on mainnet; the memo
-          program and Jupiter at instruction level are one click away.
-        </p>
-        <p class="muted">
-          <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-chain-dashboard">repo</a> ·
-          <a href="https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/">demo</a> ·
-          <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-dashboard.yml/badge.svg" alt="CI">
-        </p>
-      </div>
-      <p class="muted">The AMM card lands when its devnet deploy does.</p>
     </section>
 
     <section id="contact">
-      <h2>Contact</h2>
-      <p>GitHub: <a href="https://github.com/alex1997654">github.com/alex1997654</a></p>
-      <!-- Add when known:
-      Upwork: <a href="https://www.upwork.com/freelancers/PROFILE">upwork.com/freelancers/PROFILE</a><br>
-      Email: <a href="mailto:EMAIL">EMAIL</a>
-      -->
+      <div class="sec-head reveal">
+        <h2>Contact <span class="count">01</span></h2>
+      </div>
+      <p class="reveal">Freelance Solana and Rust work, remote. Programs, infrastructure, or the awkward parts in between.</p>
+      <p class="reveal contact-links">
+        GitHub: <a href="https://github.com/alex1997654">github.com/alex1997654</a>
+        <!-- Add when known:
+        Upwork: <a href="https://www.upwork.com/freelancers/PROFILE">upwork.com/freelancers/PROFILE</a><br>
+        Email: <a href="mailto:EMAIL">EMAIL</a>
+        -->
+      </p>
     </section>
   </main>
 
   <footer>
-    <span class="muted">Built by hand. No framework, no build step, no tracking.</span>
+    <span class="muted">Hand-written HTML, CSS and a little JavaScript. No framework, no build step, no tracking. The devnet badge at the top is a real RPC call.</span>
   </footer>
+
+  <script src="main.js"></script>
 </body>
 </html>

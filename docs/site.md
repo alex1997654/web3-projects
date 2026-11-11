@@ -47,3 +47,10 @@ A minimal workflow lints the HTML on every push. Keep it green. Badge is not nee
 ## Repo note
 
 The site is served from this repo's root. index.html and styles.css at the root ARE the site. The repo README is the portfolio front page; site editing notes stay in this file.
+
+NOTE 2026-11-11: the site was redesigned. Project cards now live directly in
+index.html (numbered cards with program IDs, verify-copy buttons, status
+chips), styling in styles.css, and a small main.js handles scroll reveals,
+copy buttons, and the live devnet balance badge. The card template below is
+superseded; copy an existing card block from index.html when a new project
+lands.
