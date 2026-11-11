@@ -12,10 +12,10 @@
   <nav>
     <span class="mark">sol&nbsp;/&nbsp;rust</span>
     <div class="links">
-      <a href="#about">About</a>
-      <a href="#system">Production system</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
+      <a href="https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/">Escrow demo</a>
+      <a href="https://alex1997654.github.io/web3-projects/solana-token22-vesting/app/">Vesting demo</a>
+      <a href="https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/">Dashboard</a>
+      <a href="https://github.com/alex1997654">GitHub</a>
     </div>
   </nav>
 
@@ -60,11 +60,28 @@
         devnet-deployed program with tests running in CI and a writeup of the
         design decisions. They are being published as they land:
       </p>
-      <ul>
-        <li>Anchor escrow: SPL tokens held in PDA vaults, taken or cancelled atomically</li>
-        <li>A constant-product AMM in Anchor, checked u64 math, rounding decided on paper first</li>
-        <li>A live chain activity dashboard, pure client-side over public endpoints</li>
-      </ul>
+      <div class="card">
+        <h3>Anchor escrow</h3>
+        <p>
+          Two-party SPL token escrow. The maker locks an offer of token A into a
+          PDA vault and asks for token B in return. A taker pays the proportional
+          share and receives the matching slice in one transaction, or takes the
+          whole remaining offer at once. Partial takes round the owed token B
+          up, against the taker, so the maker never eats rounding debt. Expiry
+          is a strict boundary and refund is maker-only.
+        </p>
+        <p>
+          Twelve integration tests run the lifecycle in CI: full and partial
+          takes, takes at the boundary, expiry enforcement, and a non-maker
+          cancel attempt that fails on the PDA seed constraint.
+        </p>
+        <p class="muted">
+          <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-anchor-escrow">repo</a> ·
+          <a href="https://alex1997654.github.io/web3-projects/solana-anchor-escrow/docs/">demo</a> ·
+          devnet: <code>9VcbzbGs9Et814sq6z7dLYaP6qPq6tffv2nHDSPqoeTo</code> ·
+          <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-escrow.yml/badge.svg" alt="CI">
+        </p>
+      </div>
       <div class="card">
         <h3>Token-2022 vesting</h3>
         <p>
@@ -85,7 +102,28 @@
           <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-vesting.yml/badge.svg" alt="CI">
         </p>
       </div>
-      <p class="muted">Repos, devnet program IDs and demos will be linked here as each goes public.</p>
+      <div class="card">
+        <h3>Chain activity dashboard</h3>
+        <p>
+          A live on-chain activity dashboard that runs entirely in the browser.
+          One WebSocket to a public RPC endpoint, transaction logs for a chosen
+          program, and Anchor events decoded from the raw log lines
+          client-side, with session stats alongside: events per minute,
+          cumulative SOL volume where events carry amounts, and the top
+          interacting wallets of the session.
+        </p>
+        <p>
+          No backend, no database, no build-time secrets. The default view
+          watches pump.fun's bonding curve program on mainnet; the memo
+          program and Jupiter at instruction level are one click away.
+        </p>
+        <p class="muted">
+          <a href="https://github.com/alex1997654/web3-projects/tree/main/solana-chain-dashboard">repo</a> ·
+          <a href="https://alex1997654.github.io/web3-projects/solana-chain-dashboard/dashboard/">demo</a> ·
+          <img src="https://github.com/alex1997654/web3-projects/actions/workflows/ci-dashboard.yml/badge.svg" alt="CI">
+        </p>
+      </div>
+      <p class="muted">The AMM card lands when its devnet deploy does.</p>
     </section>
 
     <section id="contact">
