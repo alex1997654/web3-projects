@@ -4,6 +4,9 @@ skip-lint = false
 [programs.localnet]
 amm = "DWqPzswcf4rvZSb5yGj14Cy7fnyGvrgUM17N4WnkLheY"
 
+[programs.devnet]
+amm = "DWqPzswcf4rvZSb5yGj14Cy7fnyGvrgUM17N4WnkLheY"
+
 [registry]
 url = "https://api.crates.io"
 
