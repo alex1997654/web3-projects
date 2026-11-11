@@ -89,10 +89,10 @@ LP decimals: 6. Fee: 25 bps, 0.25% of swap input. No governance knobs; the const
 
 ## Devnet program ID
 
-Not deployed yet. The program will be deployed to devnet and the real ID recorded here when the repo goes public. The line below is a placeholder:
+Deployed by the author; the deploy keypair never leaves the operator machine:
 
 ```text
-<PROGRAM_ID>
+DWqPzswcf4rvZSb5yGj14Cy7fnyGvrgUM17N4WnkLheY
 ```
 
 Verify it, and poke an existing pool by deriving its address from the two mint pubkeys with the seeds above:
