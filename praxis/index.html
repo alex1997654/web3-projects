@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Praxis — private production system</title>
+  <meta name="description" content="Praxis, a private automated trading system on Solana. Screenshots of the terminal client and live dashboard, plus the development log. Source available under NDA.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230a0e14'/%3E%3Cpath d='M4 5h8l-2.5 2.5H4zM4 8.5h5.5L7 11H4z' fill='%2314f195'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e14; --panel: #101722; --text: #e8eef4; --muted: #93a1b0;
+      --accent: #14f195; --border: #1d2735; --ok: #14f195; --nda: #8f9bb0;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+      --sans: 'Space Grotesk', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.6; }
+    .wrap { max-width: 1060px; margin: 0 auto; padding: 0 1.4rem; }
+    a { color: var(--accent); }
+    nav { position: sticky; top: 0; z-index: 5; background: rgba(10,14,20,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    nav .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: .8rem; padding-bottom: .8rem; }
+    .mark { font-family: var(--mono); font-weight: 600; letter-spacing: .04em; text-decoration: none; color: var(--text); }
+    .mark:hover { color: var(--accent); }
+    .chip { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; padding: .18rem .6rem; border: 1px solid rgba(143,155,176,.35); border-radius: 999px; color: var(--nda); }
+    header.hero { padding: 4rem 0 2.4rem; }
+    .kicker { font-family: var(--mono); color: var(--accent); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; margin: 0 0 1rem; }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin: 0 0 1.1rem; }
+    .lede { color: var(--muted); max-width: 46rem; font-size: 1.05rem; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 2.2rem 0 0; }
+    .stat { background: var(--panel); padding: 1rem 1.1rem; }
+    .stat b { display: block; font-family: var(--mono); font-size: 1.35rem; color: var(--text); font-weight: 600; }
+    .stat span { font-size: .8rem; color: var(--muted); }
+    section { padding: 2.6rem 0; }
+    h2 { font-size: 1.35rem; margin: 0; }
+    .sec-head p { color: var(--muted); margin: .5rem 0 0; }
+    .sec-head { margin-bottom: 1.6rem; }
+    figure.shot { margin: 0 0 1.6rem; }
+    figure.shot img { width: 100%; display: block; border: 1px solid var(--border); border-radius: 8px; cursor: zoom-in; transition: border-color .2s; }
+    figure.shot img:hover { border-color: #2c3a4d; }
+    figure.shot figcaption { font-family: var(--mono); font-size: .78rem; color: var(--muted); padding: .55rem .1rem 0; }
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    @media (max-width: 800px) { .cols { grid-template-columns: 1fr; } }
+    .timeline { border-left: 1px solid var(--border); margin-left: .4rem; padding-left: 1.6rem; }
+    .tl-item { position: relative; padding-bottom: 1.7rem; }
+    .tl-item::before { content: ''; position: absolute; left: calc(-1.6rem - 4.5px); top: .48rem; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    .tl-date { font-family: var(--mono); font-size: .78rem; color: var(--accent); letter-spacing: .1em; }
+    .tl-item h3 { margin: .15rem 0 .35rem; font-size: 1.02rem; }
+    .tl-item p { margin: 0; color: var(--muted); font-size: .95rem; }
+    .note { border: 1px solid var(--border); border-radius: 10px; background: var(--panel); padding: 1.1rem 1.3rem; color: var(--muted); font-size: .92rem; margin-top: 2rem; }
+    .backbar { padding: 2.4rem 0 3.4rem; }
+    #lightbox { position: fixed; inset: 0; background: rgba(5,8,12,.94); display: none; align-items: center; justify-content: center; z-index: 50; cursor: zoom-out; padding: 2rem; }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: 100%; max-height: 100%; border-radius: 6px; }
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="mark" href="../">sol<span style="color:var(--muted)">/</span>rust · praxis</a>
+      <span class="chip">Confidential · source under NDA</span>
+    </div>
+  </nav>
+
+  <header class="hero wrap">
+    <p class="kicker">Private production system</p>
+    <h1>Praxis, an automated trading system on Solana mainnet.</h1>
+    <p class="lede">A 26-crate Rust workspace: real-time ingestion over Yellowstone Geyser gRPC, protocol decoders, Redis event fabric, TimescaleDB persistence, and a decision kernel that runs on the GPU and is the same code in backtest and live. One person designs it, writes it, operates it, and carries live capital on it. This page shows the interfaces and the development log. The source stays private.</p>
+    <div class="stats">
+      <div class="stat"><b>26</b><span>Rust crates in one workspace</span></div>
+      <div class="stat"><b>~640k</b><span>lines of Rust</span></div>
+      <div class="stat"><b>551</b><span>commits since Aug 2026</span></div>
+      <div class="stat"><b>213</b><span>files under test</span></div>
+      <div class="stat"><b>2026</b><span>carrying live capital since</span></div>
+    </div>
+  </header>
+
+  <section class="wrap reveal" id="architecture">
+    <div class="sec-head">
+      <h2>System map</h2>
+      <p>One path from chain to execution. The optimizer closes the loop against the same kernel the live seat runs.</p>
+    </div>
+    <figure class="shot">
+      <img src="shots/architecture.webp" alt="Praxis architecture diagram: Geyser ingestion, Redis event fabric, TimescaleDB persistence, live engine, GPU decision kernel, execution, and the Optuna optimizer loop" loading="lazy">
+      <figcaption>High-level architecture. Geyser gRPC feed on the left, execution on the right, persistence and the optimizer underneath.</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap reveal" id="terminal">
+    <div class="sec-head">
+      <h2>Terminal client</h2>
+      <p>A ratatui front end written against the system's existing WebSocket and REST surfaces. Read-only, event-driven, no polling. Candles draw at eighth-block vertical resolution; windows are trade-anchored, so quiet spells never fabricate a bar.</p>
+    </div>
+    <div class="cols">
+      <figure class="shot">
+        <img src="shots/tui-tokens.webp" alt="Terminal screener with three token tables: new pairs, final stretch, migrated" loading="lazy">
+        <figcaption>The screener. New pairs, final stretch, and migrated tables side by side over the live firehose.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/tui-token-candles.webp" alt="Token detail page with a candlestick chart at one-second resolution and a trade tape" loading="lazy">
+        <figcaption>Token page. Candlesticks at 1s on the market-cap axis, OHLC summary, and the trade tape below.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/tui-strategies.webp" alt="Strategies table with pnl, scores, tiers and win/loss counts" loading="lazy">
+        <figcaption>Live strategies. PnL, entry scores, tier badges, and win/loss counts per seat.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/tui-king.webp" alt="King of the hill seat cards with pnl sparklines" loading="lazy">
+        <figcaption>King of the hill. Seat cards with pnl sparklines and equity, one card per running seat.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/tui-token-price.webp" alt="Token page candlestick chart switched to the price axis" loading="lazy">
+        <figcaption>Same token page with the Y axis toggled to price. Both axes are denominated in SOL.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/tui-token-1m.webp" alt="Token page candlestick chart at one-minute timeframe" loading="lazy">
+        <figcaption>One-minute timeframe. Klines are fetched for the token's full recorded span when the page opens.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="wrap reveal" id="dashboard">
+    <div class="sec-head">
+      <h2>Served dashboard</h2>
+      <p>The browser front end the terminal client mirrors, plus the operator views around it: hourly strategy review, the study explorer, and GPU telemetry.</p>
+    </div>
+    <div class="cols">
+      <figure class="shot">
+        <img src="shots/dash-main.webp" alt="Web dashboard with king hour cards, strategy cards and a telemetry strip" loading="lazy">
+        <figcaption>Main view. King hour cards on top, live strategy cards below, telemetry strip across: events per second, feed latency, GPU, disk.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/dash-hourly.webp" alt="Hourly strategies panel with king of the hill, tested and pipeline sections" loading="lazy">
+        <figcaption>Hourly strategies. The same hour the kernel trades, reviewed end to end: king of the hill, tested, pipeline.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/dash-explorer.webp" alt="Parameter and study explorer view" loading="lazy">
+        <figcaption>Study explorer. Optuna studies behind the tuned parameters, inspectable per strategy and per hour.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="shots/dash-gpu.webp" alt="Dashboard with GPU telemetry panel overlay" loading="lazy">
+        <figcaption>GPU telemetry over the live view. The decision kernel lives on the card; utilization and VRAM are watched from the same screen.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="wrap reveal" id="log">
+    <div class="sec-head">
+      <h2>Development log</h2>
+      <p>Condensed from the repository history and operating documents. Dates are month precision.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <span class="tl-date">2026 · APRIL</span>
+        <h3>Goes live</h3>
+        <p>King strategy audited for go-live against recorded history. Parity testing between backtest and live becomes a standing practice, not a one-off.</p>
+      </div>
+      <div class="tl-item">
+        <span class="tl-date">2026 · AUGUST</span>
+        <h3>The system takes its current shape</h3>
+        <p>Workspace test suite reaches 94/94 green. Grafana dashboards land. Geyser decode batching cuts ingest cost. The decision kernel moves to the GPU after walk-parity tests pass across the full archive, switched over atomically with a documented rollback. Optuna studies are wired to live survival data, and a second chain-latency watchdog gets a Redis-persisted trip budget.</p>
+      </div>
+      <div class="tl-item">
+        <span class="tl-date">2026 · SEPTEMBER</span>
+        <h3>Real execution, first incidents</h3>
+        <p>The real-king execution batch lands with wallet-manager: real fills, rent recovery, self-healing provisional legs. The feed degrades overnight; the corruption guard freezes trading rather than act on stale data, and the system recovers on its own. A disk-exhaustion incident leads to retention and maintenance hardening. The cherry strategy and boundary alerts ship.</p>
+      </div>
+      <div class="tl-item">
+        <span class="tl-date">2026 · OCTOBER</span>
+        <h3>A terminal client</h3>
+        <p>praxis-tui: a ratatui front end that speaks only the existing WebSocket and REST surfaces, adding eighth-block candlesticks and a trade-anchored chart model. Zero new production logic. King stop-simulation studies and another parity audit close the month.</p>
+      </div>
+      <div class="tl-item">
+        <span class="tl-date">2026 · NOVEMBER</span>
+        <h3>Closing the loop</h3>
+        <p>The cherry tuner's publish step now re-stamps the serve path, so what was tuned is exactly what runs. Rank bands renumber above a doubled paper band. A position-persistor regression from a bad merge is found and reverted, and the promotion cap moves to configuration.</p>
+      </div>
+    </div>
+    <div class="note">
+      Source is available under NDA and stays private. Screenshots on this page are redacted: token symbols, wallet addresses and mints are blurred, and no balances beyond aggregate telemetry are shown. Nothing here identifies the system's wallets or trade history on chain.
+    </div>
+  </section>
+
+  <div class="backbar wrap">
+    <a href="../">Back to the portfolio</a>
+  </div>
+
+  <div id="lightbox"><img src="" alt="Screenshot enlarged"></div>
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
+    document.querySelectorAll('figure.shot img').forEach((img) => {
+      img.addEventListener('click', () => { lbImg.src = img.src; lbImg.alt = img.alt; lb.classList.add('open'); });
+    });
+    lb.addEventListener('click', () => lb.classList.remove('open'));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lb.classList.remove('open'); });
+  </script>
+</body>
+</html>

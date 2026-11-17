@@ -17,7 +17,7 @@ Each Anchor project deploys to devnet and records its program ID in its own READ
 
 ## The production system behind this
 
-My main work is a private automated trading system on Solana: a 24-crate Rust workspace, real-time ingestion over Yellowstone Geyser gRPC, protocol decoding, GPU-resident strategy evaluation, and a real execution path carrying live capital on mainnet since 2026. Built and maintained by one person. Source available under NDA; no wallet activity is published.
+My main work is a private automated trading system on Solana: a 26-crate Rust workspace, real-time ingestion over Yellowstone Geyser gRPC, protocol decoding, GPU-resident strategy evaluation, and a real execution path carrying live capital on mainnet since 2026. Built and maintained by one person. Source available under NDA; no wallet activity is published. Redacted screenshots and a development log are on [the Praxis page](./praxis/).
 
 ## The site
 
